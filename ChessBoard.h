@@ -22,7 +22,7 @@ public:
 private:
     int position2coordinate(Position&);
     void piecesSet(ColorOfPieces);
-    std::map<Position,Piece> m_board;
+    std::map<Position,std::shared_ptr<Piece>> m_board;
     static int m_lines;
 //    Player m_playerW, m_playerB;
 };

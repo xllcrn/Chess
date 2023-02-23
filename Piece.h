@@ -14,21 +14,26 @@ enum class ColorOfPieces
 
 class Piece {
 public:
+    // constructors
     Piece();
-    Piece(char, ColorOfPieces, Position);
+    Piece(char, ColorOfPieces);
     Piece(Piece const &);
     Piece(Piece const &&);
-    char getType() const;
-    Position const & getPosition() const;
-    std::string to_String();
     Piece& operator=(Piece const &);
     Piece& operator=(Piece const &&);
-    bool isValid(Position const &);
-    void Piece::setPosition(Position const &);
-private:
+    virtual ~Piece() noexcept;
+    // member methods
+    std::string to_String();
+    virtual bool isValid(Position const &,Position const &)=0;
+    //getter/setter
+//    Position const & getPosition() const;
+    char getType() const;
+    void setType(char const &) ;
+//    void setPosition(Position const &);
+protected:
     char m_type;
     ColorOfPieces m_color;
-    Position m_position;
+//    Position m_position;
 };
 std::ostream& operator<<(std::ostream& , Piece &);
 

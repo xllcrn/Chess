@@ -7,11 +7,13 @@
 
 #include "Piece.h"
 
-class Pawn : Piece {
+class Pawn : public Piece {
 public:
-    Pawn(ColorOfPieces color,Position position);
+    Pawn(ColorOfPieces color);
+    ~Pawn() noexcept override;
+    bool isValid(Position const &,Position const &) override ;
 private:
+    bool m_moved;
 };
-
 
 #endif //CHESS_PAWN_H

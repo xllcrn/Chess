@@ -11,11 +11,12 @@
 
 #include <iostream>
 #include "ChessBoard.h"
+#include "Pawn.h"
 
 int main() {
 
     Position pos1{'c',1},pos2{'h',1};
-    Piece  piece1{'r',ColorOfPieces::WHITE,pos1};
+    Pawn  piece1{ColorOfPieces::WHITE};
     std::cout << piece1;
 
     ChessBoard board;
@@ -40,5 +41,11 @@ int main() {
 //    std::cout << "on affiche le dernier chessboard \n";
 //    ChessBoard board1{board};
 //    std::cout << board1;
+
+
+    Position pos_after2{'d',4};
+    board.movePiece(pos_after,pos_after2);
+    std::cout << board;
+
     return 0;
 }

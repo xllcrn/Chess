@@ -8,8 +8,15 @@
 #include <algorithm>
 #include <utility>
 #include <functional>
+#include <memory>
 #include <map>
 #include "Pawn.h"
+#include "Rook.h"
+#include "Knight.h"
+#include "Bishop.h"
+#include "King.h"
+#include "Queen.h"
+
 int ChessBoard::m_lines=8;
 
 /* Default constructor */
@@ -24,36 +31,33 @@ ChessBoard::ChessBoard(){
 
 void ChessBoard::piecesSet(ColorOfPieces color){
     int rank, rankp;
-    std::string type;
     std::string abc{"abcdefgh"};
     switch (color) {
         case ColorOfPieces::WHITE:
-            type = "rhbkqp";
             rank = 1;
             rankp= 2;
             break;
         case ColorOfPieces::BLACK:
-            type="RHBKQP";
             rank=8;
             rankp= 7;
             break;
     }
 
 //    // Rooks (tours)
-    m_board.insert({Position{'a',rank}, Piece(type[0],color,Position{'a',rank} )});       //rooks (tours)
-    m_board.insert({Position{'h',rank}, Piece(type[0],color,Position{'h',rank} )});       //rooks (tours)
-//    // Knights/Horse (cavaliers)
-    m_board.insert({Position{'b',rank}, Piece(type[1],color,Position{'b',rank} )});       //horse (cavaliers)
-    m_board.insert({Position{'g',rank}, Piece(type[1],color,Position{'g',rank} )});       //horse (cavaliers)
-//    // Bishop (fous)
-    m_board.insert({Position{'c',rank}, Piece(type[2],color,Position{'c',rank} )});       //bishop (fous)
-    m_board.insert({Position{'f',rank}, Piece(type[2],color,Position{'f',rank} )});       //bishop (fous)
-//    // King/queen (roi/reine)
-    m_board.insert({Position{'e',rank}, Piece(type[3],color,Position{'e',rank} )});       //king (roi)
-    m_board.insert({Position{'d',rank}, Piece(type[4],color,Position{'d',rank} )});       //queen (reine)
-//    // Pawn (pions)
+    m_board.insert({Position{'a',rank}, std::make_shared<Rook> (Rook(color))});
+    m_board.insert({Position{'h',rank}, std::make_shared<Rook> (Rook(color))});
+////    // Knights/Horse (cavaliers)
+    m_board.insert({Position{'b',rank}, std::make_shared<Knight> (Knight(color))});
+    m_board.insert({Position{'g',rank}, std::make_shared<Knight> (Knight(color))});
+////    // Bishop (fous)
+    m_board.insert({Position{'c',rank}, std::make_shared<Bishop> (Bishop(color))});
+    m_board.insert({Position{'f',rank}, std::make_shared<Bishop> (Bishop(color))});
+////    // King/queen (roi/reine)
+    m_board.insert({Position{'e',rank}, std::make_shared<King> (King(color))});
+    m_board.insert({Position{'d',rank}, std::make_shared<Queen> (Queen(color))});
+////    // Pawn (pions)
     for (char & elem : abc) {
-        m_board.insert({Position{elem,rankp}, Piece(color,Position{elem,rankp} )});
+        m_board.insert({Position{elem,rankp}, std::make_shared<Pawn> (Pawn(color))});
     }
 
 }
@@ -76,12 +80,12 @@ std::string ChessBoard::toString(){
     std::string abc{"  abcdefgh"};
     std::vector<char> print_board(m_lines*m_lines,' ');
 
-    std::map<Position, Piece>::iterator it;
-    for (it = m_board.begin(); it != m_board.end(); ++it){
+//    std::map<Position, Piece>::iterator it;
+    for (auto it = m_board.begin(); it != m_board.end(); ++it){
                 //coord = it->first ;//.getCoord();
         Position pos{it->first} ;
-        Piece piece{it->second};
-        print_board[pos.getCoord()] = piece.getType();
+        std::shared_ptr<Piece> p_piece{it->second};
+        print_board[pos.getCoord()] = p_piece->getType();
     }
 
     for (auto& elem : abc){
@@ -153,19 +157,22 @@ std::ostream& operator<<(std::ostream& os, ChessBoard& p){
 
 /* Move a prawn */
 void ChessBoard::movePiece(Position& pBefore, Position& pAfter){
-    Piece piece;
-    piece = m_board[pBefore];
-    if (piece.isValid(pAfter)){
+//  2 validations to proceed :
+//        - authorization of the piece
+//        - authorization of the board
+
+    std::shared_ptr<Piece> p_piece;
+    p_piece = m_board[pBefore];
+    if (p_piece->isValid(pBefore, pAfter)){
 //        auto const node = m_board.extract(piece.getPosition());
 //        node.key() = pAfter;
 //        m_board.emplace(std::move(node.key()), std::move(node.mapped()));
-        piece.setPosition(pAfter);
-        m_board[pAfter] = piece;
+        m_board[pAfter] = p_piece;
         m_board.erase(pBefore);
     }
-    Position pos {piece.getPosition()};
-    std::cout << "nouvelle pos?" << pos << std::endl;
-    std::cout << m_board[pAfter];
+    else{
+        std::cout << "MOVE IS NOT VALID, PLEASE TRY AGAIN ANOTHER ONE" << std::endl;
+    }
 }
 
 //void ChessBoard::move(Position&& before, Position&& after){
