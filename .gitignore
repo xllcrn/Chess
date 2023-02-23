@@ -1,0 +1,14 @@
+# Project exclude paths
+/cmake-build-debug/
+
+# Project exclude paths
+/.idea
+
+# Ignorer tous les fichiers texte
+*.txt
+
+# Ignorer tous les fichiers xml
+*.xml
+
+# Ignorer tous les fichiers iml
+*.iml
