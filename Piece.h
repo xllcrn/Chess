@@ -30,6 +30,7 @@ public:
     char getType() const;
     int getValue() const;
     ColorOfPieces getColor() const;
+    void setMoved();
 protected:
     trajectory vertical(Position const &, int const & step=8) const;
     trajectory horizontal(Position const &, int const & step=8) const;

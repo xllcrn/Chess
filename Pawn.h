@@ -14,7 +14,6 @@ public:
     bool isValid(Position const &,Position const &) override ;
     trajectory drawTraject(Position const &) override;
 private:
-    bool m_moved;
 };
 
 #endif //CHESS_PAWN_H

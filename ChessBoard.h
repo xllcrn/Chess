@@ -16,10 +16,11 @@ public:
     ChessBoard();
     std::vector<char> chessboardToChar() const;
     std::string boardToString(std::vector<char> const &) const;
-    void movePiece(Position const, Position const);
+    void movePiece(Position const&, Position const&);
     void moveHelp(Position const &);
     int getScoreW();
     int getScoreB();
+    void printScores();
 private:
     void piecesSet(ColorOfPieces);
     int m_scoreW;

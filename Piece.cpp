@@ -33,25 +33,6 @@ std::string Piece::to_String() const {
     return ostr.str();
 }
 
-//trajectory Piece::vertical(Position const & posStart,Position const & posEnd)const{
-//    path path1;
-//    //vertical
-//    if(posStart.getX()==posEnd.getX()){
-//        if(posStart.getY()<posEnd.getY()) {
-//            for (auto i=posStart.getY()+1; i<=posEnd.getY(); i++){
-//                path1.push_back({posStart.getX(),i});
-//            }
-//        }
-//        else{
-//            for (auto i=posStart.getY()-1; i<=posEnd.getY(); i--){
-//                path1.push_back({posStart.getX(),i});
-//            }
-//        }
-//    }
-//    trajectory trajVect({path1});
-//    return trajVect;
-//}
-
 trajectory Piece::vertical(Position const & posStart, int const & step)const{
     path path1,path2;
     //vertical
@@ -115,25 +96,6 @@ trajectory Piece::diagonal(Position const & posStart, int const & step) const{
     return trajVert;
 }
 
-//trajectory Piece::horizontal(Position const & posStart,Position const & posEnd)const{
-//    path path1;
-//    //horizontal
-//    if(posStart.getY()==posEnd.getY()){
-//        if(posStart.getX()<posEnd.getX()) {
-//            for (char c=posStart.getX()+1; c<=posEnd.getX(); c++){
-//                path1.push_back({c,posStart.getY()});
-//            }
-//        }
-//        else{
-//            for (char c=posStart.getX()-1; c<=posEnd.getX(); c--){
-//                path1.push_back({c,posStart.getY()});
-//            }
-//        }
-//    }
-//    trajectory trajHori({path1});
-//    return trajHori;
-//}
-
 trajectory Piece::horizontal(Position const & posStart, int const & step)const{
     path path1,path2;
     auto istep=0;
@@ -154,31 +116,71 @@ trajectory Piece::horizontal(Position const & posStart, int const & step)const{
 trajectory Piece::lDisplacement(Position const & posStart, int const & step)const{
     char c = posStart.getX();
     auto i = posStart.getY();
-    auto jP1 = i+1;
-    auto jP2 = i+2;
-    auto jM1 = i-1;
-    auto jM2 = i-2;
+    auto iP1 = i+1;
+    auto iP2 = i+2;
+    auto iM1 = i-1;
+    auto iM2 = i-2;
+    char cM1 = c-1;
+    char cM2 = c-2;
+    char cP1 = c+1;
+    char cP2 = c+2;
     trajectory trajL;
 
-    if ('a'<=(c-1) && (c-1)<='h'){
-        if (1<=jP2 && jP2<=8) trajL.insert(path {Position {c-1,jP2}});
-        if (1<=jM2 && jM2<=8) trajL.insert(path {Position {c-1,jM2}});
-    }
+//    if ('a'<=(c-1) && (c-1)<='h'){
+//        if (1<=iP2 && iP2<=8) trajL.insert(path {Position {c-1,iP2}});
+//        if (1<=iM2 && iM2<=8) trajL.insert(path {Position {c-1,iM2}});
+//    }
+    try{
+        Position pos{cM1,iP2};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
+    try{
+        Position pos{cM1,iM2};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
 
-    if ('a'<=(c-2) && (c-2)<='h'){
-        if (1<=jP1 && jP1<=8) trajL.insert(path {Position {c-2,jP1}});
-        if (1<=jM1 && jM1<=8) trajL.insert(path {Position {c-2,jM1}});
-    }
+//    if ('a'<=(c-2) && (c-2)<='h'){
+//        if (1<=iP1 && iP1<=8) trajL.insert(path {Position {c-2,iP1}});
+//        if (1<=iM1 && iM1<=8) trajL.insert(path {Position {c-2,iM1}});
+//    }
+    try{
+        Position pos{cM2,iP1};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
+    try{
+        Position pos{cM2,iM1};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
 
-    if ('a'<=(c+1) && (c+1)<='h'){
-        if (1<=jP2 && jP2<=8) trajL.insert(path {Position {c+1,jP2}});
-        if (1<=jM2 && jM2<=8) trajL.insert(path {Position {c+1,jM2}});
-    }
+//    if ('a'<=(c+1) && (c+1)<='h'){
+//        if (1<=iP2 && iP2<=8) trajL.insert(path {Position {c+1,iP2}});
+//        if (1<=iM2 && iM2<=8) trajL.insert(path {Position {c+1,iM2}});
+//    }
+    try{
+        Position pos{cP1,iP2};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
+    try{
+        Position pos{cP1,iM2};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
 
-    if ('a'<=(c+2) && (c+2)<='h'){
-        if (1<=jP1 && jP1<=8) trajL.insert(path {Position {c+2,jP1}});
-        if (1<=jM1 && jM1<=8) trajL.insert(path {Position {c+2,jM1}});
-    }
+
+//    if ('a'<=(c+2) && (c+2)<='h'){
+//        if (1<=iP1 && iP1<=8) trajL.insert(path {Position {c+2,iP1}});
+//        if (1<=iM1 && iM1<=8) trajL.insert(path {Position {c+2,iM1}});
+//    }
+
+    try{
+        Position pos{cP2,iP1};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
+    try{
+        Position pos{cP2,iM1};
+        trajL.insert(path {pos});
+    }catch(const std::exception &e){}
+
+
     return trajL;
 }
 
@@ -203,6 +205,10 @@ int Piece::getValue() const{
 
 ColorOfPieces Piece::getColor() const{
     return m_color;
+}
+
+void Piece::setMoved() {
+    m_hasMoved = true;
 }
 /* ----------------------------------------------------------
  *      EXTERNAL

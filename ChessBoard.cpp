@@ -36,7 +36,7 @@ ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0){
  * ----------------------------------------------------------*/
 
 void ChessBoard::piecesSet(ColorOfPieces color){
-    int rank, rankp;
+    unsigned int rank, rankp;
     std::string abc{"abcdefgh"};
     switch (color) {
         case ColorOfPieces::WHITE:
@@ -118,64 +118,46 @@ std::string ChessBoard::boardToString(std::vector<char> const & print_board) con
 
 
 /* Move a piece */
-void ChessBoard::movePiece(Position const pBefore, Position const pAfter){
-//  2 validations to proceed :
-//        - authorization of the piece
-//        - authorization of the board
-//    if(isValid(pAfter)){
-//        std::cout << "Bad position" << std::endl;
-//        return;
-//    }
+void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
 
-    // check if there is a piece at position before
-    if(m_board.find(pBefore) == m_board.end()){
-        std::cout << "Wrong start position : No piece found at that position" << std::endl;
-        return;
-    }
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board[pBefore];
-    auto valid=false;
+    try{
+        // check if there is a piece at position before
+        if(m_board.find(pBefore) == m_board.end()){
+            throw std::runtime_error("MOVE IS NOT VALID : no piece found at that position");
+        }
+        std::shared_ptr<Piece> p_piece;
+        p_piece = m_board[pBefore];
+        trajectory pathVector;
+        pathVector = p_piece->drawTraject(pBefore);
+        pathVector = correctTraject(pathVector, pAfter);
 
-    trajectory pathVector;
-    pathVector = p_piece->drawTraject(pBefore);
-    pathVector = correctTraject(pathVector,pAfter);
-
-    if (!pathVector.empty()){
-        valid = true;
-        // a piece is at pAfter
-        if(m_board.find(pAfter) != m_board.end()){
-            std::shared_ptr<Piece> p_piece_after;
-            p_piece_after = m_board[pAfter];
-            if(p_piece->getColor() == p_piece_after->getColor()){
-                valid = false;
-                std::cout << "same color" << std::endl;
-            }
-            else{
-                setScore(p_piece_after->getValue(), p_piece->getColor());
+        if (!pathVector.empty()) {
+// a piece is at pAfter
+            if (m_board.find(pAfter) != m_board.end()) {
+                std::shared_ptr<Piece> p_piece_after;
+                p_piece_after = m_board[pAfter];
+                if (p_piece->getColor() == p_piece_after->getColor()) {
+                    throw std::runtime_error(
+                            "MOVE IS NOT VALID : a piece cannot move into a position where a piece of the same color is present");
+                } else {
+                    setScore(p_piece_after->getValue(), p_piece->getColor());
+                    m_board.erase(pBefore);
+                    m_board.erase(pAfter);
+                    m_board[pAfter] = p_piece;
+                }
+            } else {
                 m_board.erase(pBefore);
-                m_board.erase(pAfter);
                 m_board[pAfter] = p_piece;
             }
+        } else {
+            throw std::runtime_error("MOVE IS NOT VALID : movement not conform to piece rules");
         }
-        else{
-            m_board.erase(pBefore);
-            m_board[pAfter] = p_piece;
-        }
-    }
-    else{
-        std::cout << "not on the trajectory" << std::endl;
-        valid = false;
-    }
 
-    // a message...
-    if (valid){
-        std::cout << "MOVE IS VALID" << std::endl;
+        // everything should be ok at that point
+        p_piece-> setMoved();
+    }catch(const std::runtime_error &e){
+        std::cerr << e.what() << std::endl;
     }
-    else{
-        std::cout << "MOVE IS NOT VALID, PLEASE TRY AGAIN ANOTHER ONE" << std::endl;
-    }
-//  Authorization of the board
-//  la piece doit retourner l'ensemble des positions du trajet autorise p_piece->path(before, after)
 }
 
 /* Show possibilities */
@@ -225,7 +207,6 @@ trajectory ChessBoard::correctTraject(trajectory const & traject) const{
                 new_path.push_back(pos);
             } else {
                 // position found : position is occupied
-                std::cout <<"an object has been found" << std::endl;
                 break;
             }
         }
@@ -285,6 +266,12 @@ int ChessBoard::getScoreW(){
 int ChessBoard::getScoreB(){
     return m_scoreB;
 }
+
+void ChessBoard::printScores(){
+    std::cout << "The score of WHITE is : " << m_scoreW << std::endl;
+    std::cout << "The score of BLACK is : " << m_scoreB << std::endl;
+}
+
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/

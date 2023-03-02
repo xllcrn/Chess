@@ -8,7 +8,7 @@
 /* ----------------------------------------------------------
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
-Pawn::Pawn(ColorOfPieces color):Piece('p',color,1),m_moved(false){
+Pawn::Pawn(ColorOfPieces color):Piece('p',color,1){
 }
 
 /* ----------------------------------------------------------
@@ -27,6 +27,7 @@ trajectory Pawn::drawTraject(Position const & posStart){
     trajectory traject;
     trajectory vert;
     auto step = 1;
+    if(!m_hasMoved) step=2;
     vert = (*this).Piece::vertical(posStart, step);
 
     for (path const & path1: vert){
@@ -40,6 +41,5 @@ trajectory Pawn::drawTraject(Position const & posStart){
                 break;
         }
     }
-
     return traject;
 }

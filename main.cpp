@@ -11,7 +11,7 @@
 
 #include <iostream>
 #include "ChessBoard.h"
-
+#include <stdexcept>
 int main() {
 
     Position pos1{'c',1},pos2{'h',1};
@@ -31,9 +31,19 @@ int main() {
     std::cout << board.getScoreB();
     std::cout << board.getScoreW();
     //Position pos({'e',13});
-    board.movePiece({'c',1},{'e',3});
+    board.movePiece({'c',4},{'c',5});
     std::cout << board;
     board.moveHelp({'e',1});
     board.moveHelp({'e',7});
+
+    board.printScores();
+
+    try{
+        Position pos3{'j',10};
+        }
+    catch( const std::runtime_error & e ) {
+            std::cerr << e.what() << std::endl;
+        }
+
     return 0;
 }
