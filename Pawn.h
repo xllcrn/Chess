@@ -12,6 +12,7 @@ public:
     Pawn(ColorOfPieces color);
     ~Pawn() noexcept override;
     bool isValid(Position const &,Position const &) override ;
+    trajectory drawTraject(Position const &) override;
 private:
     bool m_moved;
 };

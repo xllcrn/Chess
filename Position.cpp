@@ -1,42 +1,35 @@
 //
 // Created by xllcr on 21/02/2023.
 //
-
+#include <cassert>
 #include "Position.h"
 
-Position::Position():m_line('0'),m_column(0){}
+/* ------------------------------------------------------------------------
+ *                        CONSTRUCTOR
+/* ------------------------------------------------------------------------ */
 
 Position::Position(char const & x,int const &y):m_line(x),m_column(y){
-    /* Convert position to coordinate into vector m_board */
-    int lin = x-97;
-    m_coord = (y-1)*8+lin;
-}
-
-Position::Position(Position const & pos){
-    m_line = pos.m_line;
-    m_column = pos.m_column;
-    m_coord = pos.m_coord;
-}
-
-Position::~Position(){}
-
-Position & Position::operator=(Position const &pos){
-    m_line = pos.m_line;
-    m_column = pos.m_column;
-    return *this;
+    int lettre=x;
+    assert(lettre>96 && lettre<105 && "Letter is not conform : should be between a and h included");
+    assert(y>0 && y<9 && "Number is not conform : should be between 1 and 8 included");
 }
 
 
-std::ostream& operator<<(std::ostream& os, Position & pos){
-    os << pos.to_String();
-    return os;
-}
+/* ------------------------------------------------------------------------
+ *                        MEMBER FUNCTIONS
+/* ------------------------------------------------------------------------ */
 
-std::string Position::to_String() {
+
+std::string Position::to_String() const {
     std::ostringstream ostr;
     ostr << "(" << m_line << "," << m_column << ") \n";
     return ostr.str();
 }
+
+
+/* ------------------------------------------------------------------------
+ *                        GETTER / SETTER
+/* ------------------------------------------------------------------------ */
 
 void Position::setX(char const &x){
     m_line = x;
@@ -52,41 +45,27 @@ int const & Position::getY() const{
     return m_column ;
 }
 
-void Position::setCoord(int const &coord){
-    m_coord = coord;
-}
-int const & Position::getCoord() const{
-    return m_coord ;
-}
-
-Position new_position(Position const & pos, Direction const & dir){
-    Position new_pos(pos);
-    int x(pos.getX()),y(pos.getY());
-    switch (dir) {
-        case haut:
-            new_pos.setY(--y);
-            break;
-        case bas:
-            new_pos.setY(++y);
-            break;
-        case gauche:
-            new_pos.setX(--x);
-            break;
-        case droite:
-            new_pos.setX(++y);
-            break;
-        default:
-            break;
-    }
-    return new_pos;
+int Position::getCoord() const{
+    /* Convert position to coordinate into vector m_board */
+    int lin = m_line-97;
+    return (m_column-1)*8+lin;
 }
 
-bool operator==(Position& pFirst, Position & pSecond){
+/* ------------------------------------------------------------------------
+ *                        EXTERNAL FUNCTIONS
+/* ------------------------------------------------------------------------ */
+
+std::ostream& operator<<(std::ostream& os, Position const & pos){
+    os << pos.to_String();
+    return os;
+}
+
+bool operator==(Position const & pFirst, Position const & pSecond){
     return (pFirst.getX()==pSecond.getX() && pFirst.getY()==pSecond.getY());
 }
-bool operator!=(Position& pFirst, Position & pSecond){
+bool operator!=(Position const & pFirst, Position const & pSecond){
     return (!(pFirst==pSecond));
 }
-bool operator<(const Position& pFirst, const Position & pSecond){
+bool operator<(Position const & pFirst,Position const & pSecond){
     return (pFirst.getCoord()<pSecond.getCoord());
 }

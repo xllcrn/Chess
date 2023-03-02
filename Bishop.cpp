@@ -8,7 +8,7 @@
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 
-Bishop::Bishop(ColorOfPieces color):Piece('b',color){}
+Bishop::Bishop(ColorOfPieces color):Piece('b',color,3){}
 
 /* ----------------------------------------------------------
  *      DESTRUCTOR
@@ -21,3 +21,12 @@ Bishop::~Bishop() noexcept{};
 bool Bishop::isValid(Position const & posBefore, Position const & posAfter){
     return true;
 }
+
+trajectory Bishop::drawTraject(Position const & posStart){
+    trajectory traject;
+    trajectory diag;
+    diag = (*this).Piece::diagonal(posStart);
+    traject.insert(diag.begin(),diag.end());
+    return traject;
+}
+

@@ -5,6 +5,8 @@
 #ifndef CHESS_PIECE_H
 #define CHESS_PIECE_H
 #include "Position.h"
+#include <vector>
+#include <set>
 enum class ColorOfPieces
 {
     WHITE=1,
@@ -12,29 +14,33 @@ enum class ColorOfPieces
     MAX_COLOR=3
 };
 
+typedef std::vector<Position> path;
+typedef std::set<path> trajectory;
+
 class Piece {
 public:
     // constructors
-    Piece();
-    Piece(char, ColorOfPieces);
-    Piece(Piece const &);
-    Piece(Piece const &&);
-    Piece& operator=(Piece const &);
-    Piece& operator=(Piece const &&);
-    virtual ~Piece() noexcept;
+    Piece(char, ColorOfPieces, int);
+    virtual ~Piece() noexcept = default;
     // member methods
-    std::string to_String();
+    std::string to_String() const;
     virtual bool isValid(Position const &,Position const &)=0;
+    virtual trajectory drawTraject(Position const &)=0;
     //getter/setter
-//    Position const & getPosition() const;
     char getType() const;
-    void setType(char const &) ;
-//    void setPosition(Position const &);
+    int getValue() const;
+    ColorOfPieces getColor() const;
 protected:
+    trajectory vertical(Position const &, int const & step=8) const;
+    trajectory horizontal(Position const &, int const & step=8) const;
+    trajectory diagonal(Position const &, int const & step=8) const;
+    trajectory lDisplacement(Position const &, int const & step=8) const;
     char m_type;
+    int m_value;
     ColorOfPieces m_color;
-//    Position m_position;
+    bool m_hasMoved;
 };
 std::ostream& operator<<(std::ostream& , Piece &);
+std::ostream& operator<<(std::ostream& , ColorOfPieces &);
 
 #endif //CHESS_PIECE_H

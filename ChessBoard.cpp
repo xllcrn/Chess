@@ -3,31 +3,37 @@
 //
 
 #include "ChessBoard.h"
-#include "Position.h"
 #include <string>
 #include <algorithm>
-#include <utility>
+#include <iterator>
+#include <numeric>
 #include <functional>
 #include <memory>
-#include <map>
+#include <cassert>
 #include "Pawn.h"
-#include "Rook.h"
 #include "Knight.h"
 #include "Bishop.h"
 #include "King.h"
 #include "Queen.h"
-
+#include "Rook.h"
 int ChessBoard::m_lines=8;
 
+/* ----------------------------------------------------------
+ *      CONSTRUCTORS
+ * ----------------------------------------------------------*/
+
 /* Default constructor */
-ChessBoard::ChessBoard(){
+ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0){
 //  Create the pieces of the chessboard : WHITE
     piecesSet(ColorOfPieces::WHITE);
-//
-////  Create the pieces of the chessboard : BLACK
-    piecesSet(ColorOfPieces::BLACK);
 
+//  Create the pieces of the chessboard : BLACK
+    piecesSet(ColorOfPieces::BLACK);
 }
+
+/* ----------------------------------------------------------
+ *      MEMBER METHODS
+ * ----------------------------------------------------------*/
 
 void ChessBoard::piecesSet(ColorOfPieces color){
     int rank, rankp;
@@ -43,50 +49,43 @@ void ChessBoard::piecesSet(ColorOfPieces color){
             break;
     }
 
-//    // Rooks (tours)
+    m_board.insert({Position{'d',rank}, std::make_shared<Queen> (Queen(color))});
+    // Rooks (tours)
     m_board.insert({Position{'a',rank}, std::make_shared<Rook> (Rook(color))});
     m_board.insert({Position{'h',rank}, std::make_shared<Rook> (Rook(color))});
-////    // Knights/Horse (cavaliers)
+    // Knights/Horse (cavaliers)
     m_board.insert({Position{'b',rank}, std::make_shared<Knight> (Knight(color))});
     m_board.insert({Position{'g',rank}, std::make_shared<Knight> (Knight(color))});
-////    // Bishop (fous)
+//    // Bishop (fous)
     m_board.insert({Position{'c',rank}, std::make_shared<Bishop> (Bishop(color))});
     m_board.insert({Position{'f',rank}, std::make_shared<Bishop> (Bishop(color))});
-////    // King/queen (roi/reine)
+//    // King/queen (roi/reine)
     m_board.insert({Position{'e',rank}, std::make_shared<King> (King(color))});
-    m_board.insert({Position{'d',rank}, std::make_shared<Queen> (Queen(color))});
-////    // Pawn (pions)
+//
+//    // Pawn (pions)
     for (char & elem : abc) {
         m_board.insert({Position{elem,rankp}, std::make_shared<Pawn> (Pawn(color))});
     }
 
 }
 
-
-///* Copy constructor */
-//ChessBoard::ChessBoard(ChessBoard const & b) {
-//    copy(b.m_board.begin(), b.m_board.end(), back_inserter(m_board));
-//}
-
-/* Destructor */
-ChessBoard::~ChessBoard() {}
-
 /* Print chessboard */
-std::string ChessBoard::toString(){
-    std::ostringstream ostr;
-    int icount=1;
-    int num_line=0;
-    int coord;
-    std::string abc{"  abcdefgh"};
+std::vector<char> ChessBoard::chessboardToChar() const{
     std::vector<char> print_board(m_lines*m_lines,' ');
-
-//    std::map<Position, Piece>::iterator it;
     for (auto it = m_board.begin(); it != m_board.end(); ++it){
-                //coord = it->first ;//.getCoord();
         Position pos{it->first} ;
         std::shared_ptr<Piece> p_piece{it->second};
         print_board[pos.getCoord()] = p_piece->getType();
     }
+    return print_board;
+}
+
+/* Print chessboard */
+std::string ChessBoard::boardToString(std::vector<char> const & print_board) const{
+    std::ostringstream ostr;
+    auto icount=1;
+    auto num_line=0;
+    std::string abc{"  abcdefgh"};
 
     for (auto& elem : abc){
         ostr << elem << ' ';
@@ -94,7 +93,7 @@ std::string ChessBoard::toString(){
     ostr << "\n";
     ostr << "    - - - - - - - - \n";
     auto it_end = print_board.end();
-    for(int i=0;i<8;i++) {
+    for(auto i=0;i<m_lines;i++) {
         for (auto it = it_end-(i+1)*m_lines; it != it_end-i*m_lines; it++) {
             if ((icount - 1) % (m_lines) == 0) {
                 ostr << (m_lines - num_line) << " | ";
@@ -117,68 +116,182 @@ std::string ChessBoard::toString(){
     return ostr.str();
 }
 
-//std::string ChessBoard::to_string() {
-//    std::ostringstream ostr;
-//    for (auto& elem: m_board){
-//        Position pos{elem.first};
-//        Piece p_p{elem.second};
-//        std::cout << pos;
-//        std::cout << p_p;
-//    }
-//    return ostr.str();
-//}
 
-std::ostream& operator<<(std::ostream& os, ChessBoard& p){
-    os << p.toString();
-    return os;
-}
-
-//std::ostream& operator<<(std::ostream& os, ChessBoard& board){
-////    os << board.to_string();
-//
-//        for (auto& elem: board.m_board){
-//            Position pos{elem.first};
-//            Piece p_p{elem.second};
-//            os<< "coucou" << pos;
-//            os << "type de piece " << (p_p).getType();
-//        }
-//    return os;
-//}
-
-///* Convert position to coordinate into vector m_board */
-//int ChessBoard::position2coordinate(Position & pos){
-//    int coord;
-//    char letter = pos.getX();
-//    int col = pos.getY();
-//    int lin = letter-96;
-//    coord = (col-1)*m_lines+lin;
-//    return coord;
-//}
-
-/* Move a prawn */
-void ChessBoard::movePiece(Position& pBefore, Position& pAfter){
+/* Move a piece */
+void ChessBoard::movePiece(Position const pBefore, Position const pAfter){
 //  2 validations to proceed :
 //        - authorization of the piece
 //        - authorization of the board
+//    if(isValid(pAfter)){
+//        std::cout << "Bad position" << std::endl;
+//        return;
+//    }
 
+    // check if there is a piece at position before
+    if(m_board.find(pBefore) == m_board.end()){
+        std::cout << "Wrong start position : No piece found at that position" << std::endl;
+        return;
+    }
     std::shared_ptr<Piece> p_piece;
     p_piece = m_board[pBefore];
-    if (p_piece->isValid(pBefore, pAfter)){
-//        auto const node = m_board.extract(piece.getPosition());
-//        node.key() = pAfter;
-//        m_board.emplace(std::move(node.key()), std::move(node.mapped()));
-        m_board[pAfter] = p_piece;
-        m_board.erase(pBefore);
+    auto valid=false;
+
+    trajectory pathVector;
+    pathVector = p_piece->drawTraject(pBefore);
+    pathVector = correctTraject(pathVector,pAfter);
+
+    if (!pathVector.empty()){
+        valid = true;
+        // a piece is at pAfter
+        if(m_board.find(pAfter) != m_board.end()){
+            std::shared_ptr<Piece> p_piece_after;
+            p_piece_after = m_board[pAfter];
+            if(p_piece->getColor() == p_piece_after->getColor()){
+                valid = false;
+                std::cout << "same color" << std::endl;
+            }
+            else{
+                setScore(p_piece_after->getValue(), p_piece->getColor());
+                m_board.erase(pBefore);
+                m_board.erase(pAfter);
+                m_board[pAfter] = p_piece;
+            }
+        }
+        else{
+            m_board.erase(pBefore);
+            m_board[pAfter] = p_piece;
+        }
+    }
+    else{
+        std::cout << "not on the trajectory" << std::endl;
+        valid = false;
+    }
+
+    // a message...
+    if (valid){
+        std::cout << "MOVE IS VALID" << std::endl;
     }
     else{
         std::cout << "MOVE IS NOT VALID, PLEASE TRY AGAIN ANOTHER ONE" << std::endl;
     }
+//  Authorization of the board
+//  la piece doit retourner l'ensemble des positions du trajet autorise p_piece->path(before, after)
 }
 
-//void ChessBoard::move(Position&& before, Position&& after){
-//    int coord_before = position2coordinate(before);
-//    int coord_after = position2coordinate(after);
-//    char pion_before = m_board[coord_before];
-//    m_board[coord_after] = pion_before;
-//    m_board[coord_before] = ' ';
-//}
+/* Show possibilities */
+void ChessBoard::moveHelp(Position const & pBefore) {
+    if(m_board.find(pBefore) == m_board.end()){
+        std::cout << "No piece found at that position";
+        return;
+    }
+
+    std::shared_ptr<Piece> p_piece;
+    p_piece = m_board[pBefore];
+    trajectory pathVector;
+    pathVector = p_piece->drawTraject(pBefore);
+    pathVector = correctTraject(pathVector);
+    std::cout << "All possible moves for the piece" << std::endl;
+    std::cout << *p_piece << std::endl;
+    for (auto paths : pathVector) {
+        for (auto pos : paths) {
+            std::cout << pos;
+        }
+    }
+
+    std::vector<char> print_board{chessboardToChar()};
+//  if trajectory for help
+    if(!pathVector.empty()) {
+        for (auto paths : pathVector) {
+            for (auto pos : paths) {
+                print_board[pos.getCoord()] = 'x';
+            }
+        }
+    }
+    std::cout << boardToString(print_board);
+}
+
+trajectory ChessBoard::correctTraject(trajectory const & traject) const{
+    std::shared_ptr<Piece> p_piece_trj;
+    trajectory new_traject;
+    path new_path;
+
+    // loop on paths
+    for (path const & path1 : traject) {
+        new_path.clear();
+        // loop on positions
+        for (Position const & pos : path1) {
+            if (m_board.find(pos) == m_board.end()) {
+                // position not found : position is free
+                new_path.push_back(pos);
+            } else {
+                // position found : position is occupied
+                std::cout <<"an object has been found" << std::endl;
+                break;
+            }
+        }
+        new_traject.insert(new_path);
+    }
+    return new_traject;
+}
+
+trajectory ChessBoard::correctTraject(trajectory const & traject, Position const & pAfter) const{
+    std::shared_ptr<Piece> p_piece_trj;
+    trajectory new_traject;
+    path new_path;
+
+    // loop on paths
+    for (path const & path1 : traject) {
+        new_path.clear();
+        // loop on positions
+        for (Position const & pos : path1) {
+            if (m_board.find(pos) == m_board.end()) {
+                // position not found : position is free
+                new_path.push_back(pos);
+            } else {
+                // position found : position is occupied
+                // it's the piece I will win!
+                if(pos==pAfter){
+                    new_path.push_back(pos);
+                    break;
+                }
+                else {
+                    std::cout << "an object has been found" << std::endl;
+                    break;
+                }
+            }
+        }
+        // is pAfter in the path?
+        if(std::find(new_path.begin(), new_path.end(), pAfter) != new_path.end()){
+            new_traject.insert(new_path);
+        }
+    }
+    return new_traject;
+}
+
+void ChessBoard::setScore(int const & value, ColorOfPieces const & color){
+    switch (color){
+        case ColorOfPieces::WHITE:
+            m_scoreW += value;
+            break;
+        case ColorOfPieces::BLACK:
+            m_scoreB += value;
+            break;
+    }
+}
+
+int ChessBoard::getScoreW(){
+    return m_scoreW;
+}
+int ChessBoard::getScoreB(){
+    return m_scoreB;
+}
+/* ----------------------------------------------------------
+ *      EXTERNAL
+ * ----------------------------------------------------------*/
+
+std::ostream& operator<<(std::ostream& os, ChessBoard& p){
+    std::vector<char> print_board;
+    print_board = p.chessboardToChar();
+    os << p.boardToString(print_board);
+    return os;
+}

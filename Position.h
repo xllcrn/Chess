@@ -9,39 +9,21 @@
 #include <iostream>
 #include <sstream>
 
-typedef enum ListeDesDirections
-{
-    positionCourante,
-    haut,
-    bas,
-    gauche,
-    droite,
-    max_dir
-}
-        Direction;
-
 class Position {
 public:
-    Position();
     Position(char const &, int const &);
-    Position(Position const &);
-    ~Position();
-    Position & operator=(Position const &);
-    std::string to_String();
+    std::string to_String() const;
     void setX(char const &);
     void setY(int const &);
-    void setCoord(int const &);
     char const & getX() const;
     int const & getY() const;
-    int const & getCoord() const;
+    int getCoord() const;
 private:
     char m_line;
     int m_column;
-    int m_coord;
 };
-std::ostream& operator<<(std::ostream& , Position &);
-bool operator==(Position& , Position &);
+std::ostream& operator<<(std::ostream& , Position const &);
+bool operator==(Position const & , Position const &);
 bool operator<(const Position& , const Position &);
-bool operator!=(Position& , Position &);
-Position new_position(Position const &, Direction const &);
+bool operator!=(Position const & , Position const &);
 #endif //PACMAN_POSITION_H

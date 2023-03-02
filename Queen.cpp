@@ -8,7 +8,7 @@
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 
-Queen::Queen(ColorOfPieces color):Piece('q',color){}
+Queen::Queen(ColorOfPieces color):Piece('q',color, 9){}
 
 /* ----------------------------------------------------------
  *      DESTRUCTOR
@@ -19,5 +19,19 @@ Queen::~Queen() noexcept{};
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
 bool Queen::isValid(Position const & posBefore, Position const & posAfter){
+    if(posBefore==posAfter) return false;
+
     return true;
+}
+
+trajectory Queen::drawTraject(Position const & posStart){
+    trajectory traject;
+    trajectory vert, hori, diag;
+    vert = (*this).Piece::vertical(posStart);
+    hori = (*this).Piece::horizontal(posStart);
+    diag = (*this).Piece::diagonal(posStart);
+    traject.insert(vert.begin(),vert.end());
+    traject.insert(hori.begin(),hori.end());
+    traject.insert(diag.begin(),diag.end());
+    return traject;
 }

@@ -11,21 +11,24 @@
 #include "Piece.h"
 #include <map>
 
-class ChessBoard {
+class ChessBoard final {
 public:
     ChessBoard();
-    //ChessBoard(ChessBoard const &);
-    ~ChessBoard();
-    std::string toString();
-    void movePiece(Position&, Position&);
-//    void move(Position&&, Position&&);
+    std::vector<char> chessboardToChar() const;
+    std::string boardToString(std::vector<char> const &) const;
+    void movePiece(Position const, Position const);
+    void moveHelp(Position const &);
+    int getScoreW();
+    int getScoreB();
 private:
-    int position2coordinate(Position&);
     void piecesSet(ColorOfPieces);
+    int m_scoreW;
+    int m_scoreB;
+    void setScore(int const &, ColorOfPieces const &);
     std::map<Position,std::shared_ptr<Piece>> m_board;
     static int m_lines;
-//    Player m_playerW, m_playerB;
+    trajectory correctTraject(trajectory const &) const;
+    trajectory correctTraject(trajectory const &, Position const &) const;
 };
 std::ostream& operator<<(std::ostream& , ChessBoard&);
-
 #endif //CHESS_BOARD_H
