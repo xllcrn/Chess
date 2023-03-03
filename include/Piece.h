@@ -14,8 +14,8 @@ enum class ColorOfPieces
     MAX_COLOR=3
 };
 
-typedef std::vector<Position> path;
-typedef std::set<path> trajectory;
+using path = std::vector<Position>;
+using trajectory = std::set<path> ;
 
 class Piece {
 public:
@@ -32,10 +32,10 @@ public:
     ColorOfPieces getColor() const;
     void setMoved();
 protected:
-    trajectory vertical(Position const &, int const & step=8) const;
-    trajectory horizontal(Position const &, int const & step=8) const;
-    trajectory diagonal(Position const &, int const & step=8) const;
-    trajectory lDisplacement(Position const &, int const & step=8) const;
+    trajectory vertical(Position const &, int step=8) const;
+    trajectory horizontal(Position const &, int step=8) const;
+    trajectory diagonal(Position const &, int step=8) const;
+    trajectory lDisplacement(Position const &, int step=8) const;
     char m_type;
     int m_value;
     ColorOfPieces m_color;

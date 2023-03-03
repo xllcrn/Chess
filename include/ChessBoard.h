@@ -25,9 +25,11 @@ private:
     void piecesSet(ColorOfPieces);
     int m_scoreW;
     int m_scoreB;
+    ColorOfPieces m_color_active;
     void setScore(int const &, ColorOfPieces const &);
     std::map<Position,std::shared_ptr<Piece>> m_board;
     static int m_lines;
+    void switch_color(ColorOfPieces);
     trajectory correctTraject(trajectory const &) const;
     trajectory correctTraject(trajectory const &, Position const &) const;
 };

@@ -11,18 +11,17 @@
 
 class Position {
 public:
-    Position(char const &, unsigned int const &);
     std::string to_String() const;
     void setX(char const &);
     void setY(unsigned int const &);
     char const & getX() const;
     unsigned int const & getY() const;
     int getCoord() const;
+    static Position create_position(char const &, unsigned int const &);
 private:
     char m_line;
     unsigned int m_column;
-    static const char& validate_line(const char& line);
-    static const unsigned int& validate_column(const unsigned int& column);
+    Position(char const &, unsigned int const &);
 };
 std::ostream& operator<<(std::ostream& , Position const &);
 bool operator==(Position const & , Position const &);

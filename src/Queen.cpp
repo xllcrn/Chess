@@ -27,9 +27,9 @@ bool Queen::isValid(Position const & posBefore, Position const & posAfter){
 trajectory Queen::drawTraject(Position const & posStart){
     trajectory traject;
     trajectory vert, hori, diag;
-    vert = (*this).Piece::vertical(posStart);
-    hori = (*this).Piece::horizontal(posStart);
-    diag = (*this).Piece::diagonal(posStart);
+    vert = vertical(posStart);
+    hori = horizontal(posStart);
+    diag = diagonal(posStart);
     traject.insert(vert.begin(),vert.end());
     traject.insert(hori.begin(),hori.end());
     traject.insert(diag.begin(),diag.end());

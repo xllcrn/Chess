@@ -23,12 +23,13 @@ int ChessBoard::m_lines=8;
  * ----------------------------------------------------------*/
 
 /* Default constructor */
-ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0){
+ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0),m_color_active(ColorOfPieces::WHITE){
 //  Create the pieces of the chessboard : WHITE
     piecesSet(ColorOfPieces::WHITE);
 
 //  Create the pieces of the chessboard : BLACK
     piecesSet(ColorOfPieces::BLACK);
+    std::cout << "---It's white who play---" << std::endl;
 }
 
 /* ----------------------------------------------------------
@@ -48,23 +49,22 @@ void ChessBoard::piecesSet(ColorOfPieces color){
             rankp= 7;
             break;
     }
-
-    m_board.insert({Position{'d',rank}, std::make_shared<Queen> (Queen(color))});
+    m_board.insert({Position::create_position('d',rank), std::make_shared<Queen> (Queen(color))});
     // Rooks (tours)
-    m_board.insert({Position{'a',rank}, std::make_shared<Rook> (Rook(color))});
-    m_board.insert({Position{'h',rank}, std::make_shared<Rook> (Rook(color))});
+    m_board.insert({Position::create_position('a',rank), std::make_shared<Rook> (Rook(color))});
+    m_board.insert({Position::create_position('h',rank), std::make_shared<Rook> (Rook(color))});
     // Knights/Horse (cavaliers)
-    m_board.insert({Position{'b',rank}, std::make_shared<Knight> (Knight(color))});
-    m_board.insert({Position{'g',rank}, std::make_shared<Knight> (Knight(color))});
+    m_board.insert({Position::create_position('b',rank), std::make_shared<Knight> (Knight(color))});
+    m_board.insert({Position::create_position('g',rank), std::make_shared<Knight> (Knight(color))});
 //    // Bishop (fous)
-    m_board.insert({Position{'c',rank}, std::make_shared<Bishop> (Bishop(color))});
-    m_board.insert({Position{'f',rank}, std::make_shared<Bishop> (Bishop(color))});
+    m_board.insert({Position::create_position('c',rank), std::make_shared<Bishop> (Bishop(color))});
+    m_board.insert({Position::create_position('f',rank), std::make_shared<Bishop> (Bishop(color))});
 //    // King/queen (roi/reine)
-    m_board.insert({Position{'e',rank}, std::make_shared<King> (King(color))});
+    m_board.insert({Position::create_position('e',rank), std::make_shared<King> (King(color))});
 //
 //    // Pawn (pions)
     for (char & elem : abc) {
-        m_board.insert({Position{elem,rankp}, std::make_shared<Pawn> (Pawn(color))});
+        m_board.insert({Position::create_position(elem,rankp), std::make_shared<Pawn> (Pawn(color))});
     }
 
 }
@@ -120,25 +120,39 @@ std::string ChessBoard::boardToString(std::vector<char> const & print_board) con
 /* Move a piece */
 void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
 
-    try{
-        // check if there is a piece at position before
+//    try{
+        bool valid = true;
+        // check : if there is a piece at position before
         if(m_board.find(pBefore) == m_board.end()){
-            throw std::runtime_error("MOVE IS NOT VALID : no piece found at that position");
+//            throw std::runtime_error("MOVE IS NOT VALID : no piece found at that position");
+            valid = false;
         }
+
+        // take the piece to move
         std::shared_ptr<Piece> p_piece;
         p_piece = m_board[pBefore];
+
+        // check : the good color active
+        ColorOfPieces color = p_piece->getColor();
+        if (color!=m_color_active){
+            valid = false;
+        }
+
+        // Movement
+
         trajectory pathVector;
         pathVector = p_piece->drawTraject(pBefore);
         pathVector = correctTraject(pathVector, pAfter);
 
-        if (!pathVector.empty()) {
+        if (!pathVector.empty() && valid) {
 // a piece is at pAfter
             if (m_board.find(pAfter) != m_board.end()) {
                 std::shared_ptr<Piece> p_piece_after;
                 p_piece_after = m_board[pAfter];
                 if (p_piece->getColor() == p_piece_after->getColor()) {
-                    throw std::runtime_error(
-                            "MOVE IS NOT VALID : a piece cannot move into a position where a piece of the same color is present");
+                    valid = false;
+//                    throw std::runtime_error(
+//                            "MOVE IS NOT VALID : a piece cannot move into a position where a piece of the same color is present");
                 } else {
                     setScore(p_piece_after->getValue(), p_piece->getColor());
                     m_board.erase(pBefore);
@@ -150,14 +164,20 @@ void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
                 m_board[pAfter] = p_piece;
             }
         } else {
-            throw std::runtime_error("MOVE IS NOT VALID : movement not conform to piece rules");
+//            throw std::runtime_error("MOVE IS NOT VALID : movement not conform to piece rules");
+            valid = false;
         }
 
         // everything should be ok at that point
-        p_piece-> setMoved();
-    }catch(const std::runtime_error &e){
-        std::cerr << e.what() << std::endl;
-    }
+        if (valid) {
+            p_piece-> setMoved();
+            switch_color(m_color_active);
+            if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
+            if (m_color_active==ColorOfPieces::BLACK)std::cout << "---It's black who play---" << std::endl;
+        }
+//    }catch(const std::runtime_error &e){
+//        std::cerr << e.what() << std::endl;
+//    }
 }
 
 /* Show possibilities */
@@ -236,7 +256,7 @@ trajectory ChessBoard::correctTraject(trajectory const & traject, Position const
                     break;
                 }
                 else {
-                    std::cout << "an object has been found" << std::endl;
+//                    std::cout << "an object has been found" << std::endl;
                     break;
                 }
             }
@@ -272,6 +292,16 @@ void ChessBoard::printScores(){
     std::cout << "The score of BLACK is : " << m_scoreB << std::endl;
 }
 
+void ChessBoard::switch_color(ColorOfPieces color) {
+    switch (color) {
+        case ColorOfPieces::WHITE:
+            m_color_active = ColorOfPieces::BLACK;
+            break;
+        case ColorOfPieces::BLACK:
+            m_color_active = ColorOfPieces::WHITE;
+            break;
+    }
+}
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/
