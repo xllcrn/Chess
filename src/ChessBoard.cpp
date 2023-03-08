@@ -23,18 +23,58 @@ int ChessBoard::m_lines=8;
  * ----------------------------------------------------------*/
 
 /* Default constructor */
-ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0),m_color_active(ColorOfPieces::WHITE){
-//  Create the pieces of the chessboard : WHITE
-    piecesSet(ColorOfPieces::WHITE);
-
+ChessBoard::ChessBoard():m_scoreW(0),m_scoreB(0),m_color_active(ColorOfPieces::WHITE),
+                         m_kingW(Position::create_position('e',1)),m_kingB(Position::create_position('e',8)){
+    //  Create the pieces of the chessboard : WHITE
+    piecesSet("rhbqkbhr/pppppppp/8/8/8/8/PPPPPPPP/RHBQKBHR");
 //  Create the pieces of the chessboard : BLACK
-    piecesSet(ColorOfPieces::BLACK);
     std::cout << "---It's white who play---" << std::endl;
 }
 
+ChessBoard::ChessBoard(std::string const & boardData):m_scoreW(0),m_scoreB(0),m_color_active(ColorOfPieces::WHITE),
+                                                      m_kingW(Position::create_position('e',1)),m_kingB(Position::create_position('e',8)){
+//  Create the pieces of the chessboard
+    piecesSet(boardData);
+    std::cout << "---It's white who play---" << std::endl;
+}
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
+void ChessBoard::piecesSet(std::string const & boardData){
+    auto rank=1;
+    auto i=-1;
+    ColorOfPieces color=ColorOfPieces::WHITE;
+    std::string abc{"abcdefgh"};
+    std::string type{"rhbqkpRHBQKP"};
+    for (auto const & C : boardData){
+        ++i;
+        if(std::isdigit(C)) continue;
+        std::size_t found = type.find(C);
+        if (found!=std::string::npos){
+            if (rank>8) assert("Bad string initialization to set boardchess pieces. Too much characters");
+            color=ColorOfPieces::WHITE;
+            if (isupper(C)) color=ColorOfPieces::BLACK;
+            char c = tolower(C);
+            if(c=='q') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Queen> (Queen(color))});
+            if(c=='r') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Rook> (Rook(color))});
+            if(c=='b') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Bishop> (Bishop(color))});
+            if(c=='h') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Knight> (Knight(color))});
+            if(c=='p') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Pawn> (Pawn(color))});
+            if(c=='k') {
+                m_board.insert({Position::create_position(abc[i], rank), std::make_shared<King>(King(color))});
+                setKingPosition(Position::create_position(abc[i], rank), color);
+            }
+        }
+        else if (C=='/'){
+            i = -1;
+            ++rank;
+        }
+        else{
+            assert("Bad string initialization to set boardchess pieces");
+        }
+    }
+}
+
 
 void ChessBoard::piecesSet(ColorOfPieces color){
     unsigned int rank, rankp;
@@ -120,65 +160,115 @@ std::string ChessBoard::boardToString(std::vector<char> const & print_board) con
 /* Move a piece */
 void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
 
-//    try{
-        bool valid = true;
-        // check : if there is a piece at position before
-        if(m_board.find(pBefore) == m_board.end()){
-//            throw std::runtime_error("MOVE IS NOT VALID : no piece found at that position");
-            valid = false;
-        }
+    bool valid = moveIsValid(pBefore,pAfter);
+    if (!valid){
+        std::cout << "Displacement is NOT VALID" << std::endl;
+        return;
+    }
 
-        // take the piece to move
-        std::shared_ptr<Piece> p_piece;
-        p_piece = m_board[pBefore];
+    // take the piece to move
+    std::shared_ptr<Piece> p_piece;
+    p_piece = m_board[pBefore];
+    // is there a piece at the final position?
+    std::shared_ptr<Piece> p_piece_after;
+    bool isPieceAfter = false;
+    if (m_board.find(pAfter) != m_board.end()){
+        isPieceAfter=true;
+        p_piece_after = m_board[pAfter];
+    }
 
-        // check : the good color active
-        ColorOfPieces color = p_piece->getColor();
-        if (color!=m_color_active){
-            valid = false;
-        }
+    // a piece is at pAfter
+    if (isPieceAfter) {
+        setScore(p_piece_after->getValue(), p_piece->getColor());
+        m_board.erase(pBefore);
+        m_board.erase(pAfter);
+        m_board[pAfter] = p_piece;
+    } else {
+        m_board.erase(pBefore);
+        m_board[pAfter] = p_piece;
+    }
+    p_piece-> setMoved();
+//    if(p_piece->getType()=='k') setKingPosition(pAfter, m_color_active);
+    switch_color(m_color_active);
+    if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
+    if (m_color_active==ColorOfPieces::BLACK)std::cout << "---It's black who play---" << std::endl;
 
-        // Movement
-
-        trajectory pathVector;
-        pathVector = p_piece->drawTraject(pBefore);
-        pathVector = correctTraject(pathVector, pAfter);
-
-        if (!pathVector.empty() && valid) {
-// a piece is at pAfter
-            if (m_board.find(pAfter) != m_board.end()) {
-                std::shared_ptr<Piece> p_piece_after;
-                p_piece_after = m_board[pAfter];
-                if (p_piece->getColor() == p_piece_after->getColor()) {
-                    valid = false;
-//                    throw std::runtime_error(
-//                            "MOVE IS NOT VALID : a piece cannot move into a position where a piece of the same color is present");
-                } else {
-                    setScore(p_piece_after->getValue(), p_piece->getColor());
-                    m_board.erase(pBefore);
-                    m_board.erase(pAfter);
-                    m_board[pAfter] = p_piece;
-                }
-            } else {
-                m_board.erase(pBefore);
-                m_board[pAfter] = p_piece;
-            }
-        } else {
-//            throw std::runtime_error("MOVE IS NOT VALID : movement not conform to piece rules");
-            valid = false;
-        }
-
-        // everything should be ok at that point
-        if (valid) {
-            p_piece-> setMoved();
-            switch_color(m_color_active);
-            if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
-            if (m_color_active==ColorOfPieces::BLACK)std::cout << "---It's black who play---" << std::endl;
-        }
-//    }catch(const std::runtime_error &e){
-//        std::cerr << e.what() << std::endl;
-//    }
 }
+
+
+/* Move a piece */
+bool ChessBoard::moveIsValid(Position const & pBefore, Position const & pAfter){
+
+    bool valid = true;
+
+    /*          check : is a piece at initial position ?
+    ***************************************************/
+    if(m_board.find(pBefore) == m_board.end()){
+        return false;
+    }
+
+    // take the piece to move
+    std::shared_ptr<Piece> p_piece;
+    p_piece = m_board[pBefore];
+    // is there a piece at the final position?
+    std::shared_ptr<Piece> p_piece_after;
+    bool isPieceAfter = false;
+    if (m_board.find(pAfter) != m_board.end()){
+        isPieceAfter=true;
+        p_piece_after = m_board[pAfter];
+    }
+
+    /*          check : the right color to play ?
+    ***************************************************/
+    ColorOfPieces color = p_piece->getColor();
+    if (color!=m_color_active){
+        return false;
+    }
+
+    /*          check : piece before & after of different color ?
+    **************************************************************/
+    if (isPieceAfter) {
+        if (p_piece->getColor() == p_piece_after->getColor()) {
+            return false;
+        }
+    }
+
+    // Displacement
+    trajectory pathVector;
+    pathVector = p_piece->drawTraject(pBefore,isPieceAfter);
+    pathVector = correctTraject(pathVector, pAfter);
+
+    /*          check : is there a path ?
+     ***************************************************/
+    if (pathVector.empty()) {
+        return false;
+        //            throw std::runtime_error("MOVE IS NOT VALID : movement not conform to piece rules");
+    }
+
+    return true;
+}
+
+
+
+//bool Chessboard::CheckMate(){
+//    // check if the king of the activate color is checkmate
+//    // boucle sur toutes les pieces de l'autre couleur
+//    // le roi doit etre attaque de toute part, quoiqu'il fasse
+//    // s'il est attaque sur sa position de depart : il doit bouger
+//    // 1) verifier s'il peut se sauver
+//    // 2) verifier si aucune autre piece peut le sauver
+//    // s'il est attaque sur toutes les autres positions possibles et qu'aucune piece ne peut l'aider: c'est echec et mat
+//
+//    // 1) le roi est il attaque?
+//    // reperer le roi... a tout moment conserver les positions des rois en memoire!
+//    // loop sur les pieces de l'autre couleur et on voit si elles peuvent se positionner sur le roi
+//    for (auto const & p_piece : m_board){
+//        p_piece.second->
+//    }
+//    std::shared_ptr<Piece> p_piece;
+//    p_piece = m_board[pBefore];
+//
+//}
 
 /* Show possibilities */
 void ChessBoard::moveHelp(Position const & pBefore) {
@@ -227,6 +317,7 @@ trajectory ChessBoard::correctTraject(trajectory const & traject) const{
                 new_path.push_back(pos);
             } else {
                 // position found : position is occupied
+                new_path.push_back(pos);
                 break;
             }
         }
@@ -236,7 +327,6 @@ trajectory ChessBoard::correctTraject(trajectory const & traject) const{
 }
 
 trajectory ChessBoard::correctTraject(trajectory const & traject, Position const & pAfter) const{
-    std::shared_ptr<Piece> p_piece_trj;
     trajectory new_traject;
     path new_path;
 
@@ -287,6 +377,14 @@ int ChessBoard::getScoreB(){
     return m_scoreB;
 }
 
+std::shared_ptr<Piece> ChessBoard::getPiece(Position const & pos) {
+    return m_board[pos];
+}
+
+ColorOfPieces ChessBoard::getPieceColor(Position const & pos) {
+    return m_board[pos]->getColor();
+}
+
 void ChessBoard::printScores(){
     std::cout << "The score of WHITE is : " << m_scoreW << std::endl;
     std::cout << "The score of BLACK is : " << m_scoreB << std::endl;
@@ -299,6 +397,17 @@ void ChessBoard::switch_color(ColorOfPieces color) {
             break;
         case ColorOfPieces::BLACK:
             m_color_active = ColorOfPieces::WHITE;
+            break;
+    }
+}
+
+void ChessBoard::setKingPosition(const Position &pos, const ColorOfPieces &color) {
+    switch (color) {
+        case ColorOfPieces::WHITE:
+            m_kingW = pos;
+            break;
+        case ColorOfPieces::BLACK:
+            m_kingB = pos;
             break;
     }
 }

@@ -24,7 +24,7 @@ bool Queen::isValid(Position const & posBefore, Position const & posAfter){
     return true;
 }
 
-trajectory Queen::drawTraject(Position const & posStart){
+trajectory Queen::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory vert, hori, diag;
     vert = vertical(posStart);

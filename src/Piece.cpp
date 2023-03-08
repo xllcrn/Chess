@@ -210,6 +210,7 @@ ColorOfPieces Piece::getColor() const{
 void Piece::setMoved() {
     m_hasMoved = true;
 }
+void Piece::setDiagonal(bool move_diag) {}
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/

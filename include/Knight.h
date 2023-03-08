@@ -11,7 +11,7 @@ public:
     Knight(ColorOfPieces color);
     ~Knight() noexcept override;
     bool isValid(Position const &,Position const &) override ;
-    trajectory drawTraject(Position const &) override;
+    trajectory drawTraject(Position const &, bool=false) override;
 private:
 };
 

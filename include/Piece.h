@@ -25,12 +25,13 @@ public:
     // member methods
     std::string to_String() const;
     virtual bool isValid(Position const &,Position const &)=0;
-    virtual trajectory drawTraject(Position const &)=0;
+    virtual trajectory drawTraject(Position const &, bool=false)=0;
     //getter/setter
     char getType() const;
     int getValue() const;
     ColorOfPieces getColor() const;
     void setMoved();
+    virtual void setDiagonal(bool move_diag);
 protected:
     trajectory vertical(Position const &, int step=8) const;
     trajectory horizontal(Position const &, int step=8) const;
@@ -43,5 +44,4 @@ protected:
 };
 std::ostream& operator<<(std::ostream& , Piece &);
 std::ostream& operator<<(std::ostream& , ColorOfPieces &);
-
 #endif //CHESS_PIECE_H

@@ -30,5 +30,7 @@ tests go in [tests/](tests/) (compiled to `unit_tests` by default).
 - Checks and error management
 
 ## 10/03/2023
-- Poject structure
+- Project structure
 - Testbase
+- Initialization of the board with a string
+- Pawn displacement : diagonal

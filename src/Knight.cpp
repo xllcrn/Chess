@@ -22,10 +22,10 @@ bool Knight::isValid(Position const & posBefore, Position const & posAfter){
     return true;
 }
 
-trajectory Knight::drawTraject(Position const & posStart){
+trajectory Knight::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory ltraj;
-    ltraj = (*this).Piece::lDisplacement(posStart);
+    ltraj = lDisplacement(posStart);
     traject.insert(ltraj.begin(),ltraj.end());
     return traject;
 }

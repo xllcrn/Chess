@@ -12,8 +12,10 @@ public:
     Pawn(ColorOfPieces color);
     ~Pawn() noexcept override;
     bool isValid(Position const &,Position const &) override ;
-    trajectory drawTraject(Position const &) override;
+    trajectory drawTraject(Position const &, bool=false) override;
+    void setDiagonal(bool);
 private:
+    bool m_move_diag=false;
 };
 
 #endif //CHESS_PAWN_H

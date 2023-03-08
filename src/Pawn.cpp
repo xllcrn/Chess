@@ -23,14 +23,21 @@ bool Pawn::isValid(Position const & posBefore, Position const & posAfter){
     return true;
 }
 
-trajectory Pawn::drawTraject(Position const & posStart){
+trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
     trajectory traject;
-    trajectory vert;
+    trajectory traj;
+    // if has moved : step 1, if not can be 2
     auto step = 1;
-    if(!m_hasMoved) step=2;
-    vert = (*this).Piece::vertical(posStart, step);
+    if (move_diag){
+        traj = diagonal(posStart, step);
+    }
+    else{
+        if(!m_hasMoved) step=2;
+        traj = vertical(posStart, step);
+    }
 
-    for (path const & path1: vert){
+    // only moving forward
+    for (path const & path1: traj){
         Position pos = path1[0];
         switch (m_color){
             case(ColorOfPieces::WHITE):
@@ -42,4 +49,11 @@ trajectory Pawn::drawTraject(Position const & posStart){
         }
     }
     return traject;
+}
+
+/* ------------------------------------------------------------------------
+ *                        GETTER / SETTER
+/* ------------------------------------------------------------------------ */
+void Pawn::setDiagonal(bool move_diag) {
+    m_move_diag = move_diag;
 }
