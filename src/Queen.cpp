@@ -18,12 +18,6 @@ Queen::~Queen() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool Queen::isValid(Position const & posBefore, Position const & posAfter){
-    if(posBefore==posAfter) return false;
-
-    return true;
-}
-
 trajectory Queen::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory vert, hori, diag;

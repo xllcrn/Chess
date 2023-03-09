@@ -18,10 +18,6 @@ Rook::~Rook() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool Rook::isValid(Position const & posBefore, Position const & posAfter){
-    return true;
-}
-
 trajectory Rook::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory vert, hori, diag;

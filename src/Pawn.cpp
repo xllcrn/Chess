@@ -19,10 +19,6 @@ Pawn::~Pawn() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool Pawn::isValid(Position const & posBefore, Position const & posAfter){
-    return true;
-}
-
 trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
     trajectory traject;
     trajectory traj;
@@ -54,6 +50,3 @@ trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
 /* ------------------------------------------------------------------------
  *                        GETTER / SETTER
 /* ------------------------------------------------------------------------ */
-void Pawn::setDiagonal(bool move_diag) {
-    m_move_diag = move_diag;
-}

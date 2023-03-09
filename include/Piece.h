@@ -2,21 +2,27 @@
 // Created by xllcr on 22/02/2023.
 //
 
+
 #ifndef CHESS_PIECE_H
 #define CHESS_PIECE_H
 #include "Position.h"
 #include <vector>
 #include <set>
+
+/// @brief Color of chessboard pieces
 enum class ColorOfPieces
 {
-    WHITE=1,
-    BLACK=2,
-    MAX_COLOR=3
+    WHITE=1,        ///< White
+    BLACK=2,        ///< Black
+    MAX_COLOR=3     ///< -
 };
 
 using path = std::vector<Position>;
 using trajectory = std::set<path> ;
 
+/// @brief Abstract & base class for chessboard pieces
+/// @details Draw allowable trajectory for displacement
+/// and give access to some attributes
 class Piece {
 public:
     // constructors
@@ -24,14 +30,13 @@ public:
     virtual ~Piece() noexcept = default;
     // member methods
     std::string to_String() const;
-    virtual bool isValid(Position const &,Position const &)=0;
     virtual trajectory drawTraject(Position const &, bool=false)=0;
     //getter/setter
     char getType() const;
     int getValue() const;
+    virtual bool isKing() const;
     ColorOfPieces getColor() const;
     void setMoved();
-    virtual void setDiagonal(bool move_diag);
 protected:
     trajectory vertical(Position const &, int step=8) const;
     trajectory horizontal(Position const &, int step=8) const;

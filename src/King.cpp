@@ -18,10 +18,6 @@ King::~King() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool King::isValid(Position const & posBefore, Position const & posAfter){
-    return true;
-}
-
 trajectory King::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory vert, hori, diag;
@@ -33,4 +29,8 @@ trajectory King::drawTraject(Position const & posStart, bool){
     traject.insert(hori.begin(),hori.end());
     traject.insert(diag.begin(),diag.end());
     return traject;
+}
+
+bool King::isKing() const{
+    return true;
 }

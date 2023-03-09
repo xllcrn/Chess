@@ -126,10 +126,6 @@ trajectory Piece::lDisplacement(Position const & posStart, int step)const{
     char cP2 = c+2;
     trajectory trajL;
 
-//    if ('a'<=(c-1) && (c-1)<='h'){
-//        if (1<=iP2 && iP2<=8) trajL.insert(path {Position {c-1,iP2}});
-//        if (1<=iM2 && iM2<=8) trajL.insert(path {Position {c-1,iM2}});
-//    }
     try{
         Position pos = Position::create_position(cM1,iP2);
         trajL.insert(path {pos});
@@ -139,10 +135,6 @@ trajectory Piece::lDisplacement(Position const & posStart, int step)const{
         trajL.insert(path {pos});
     }catch(const std::exception &e){}
 
-//    if ('a'<=(c-2) && (c-2)<='h'){
-//        if (1<=iP1 && iP1<=8) trajL.insert(path {Position {c-2,iP1}});
-//        if (1<=iM1 && iM1<=8) trajL.insert(path {Position {c-2,iM1}});
-//    }
     try{
         Position pos = Position::create_position(cM2,iP1);
         trajL.insert(path {pos});
@@ -152,10 +144,6 @@ trajectory Piece::lDisplacement(Position const & posStart, int step)const{
         trajL.insert(path {pos});
     }catch(const std::exception &e){}
 
-//    if ('a'<=(c+1) && (c+1)<='h'){
-//        if (1<=iP2 && iP2<=8) trajL.insert(path {Position {c+1,iP2}});
-//        if (1<=iM2 && iM2<=8) trajL.insert(path {Position {c+1,iM2}});
-//    }
     try{
         Position pos = Position::create_position(cP1,iP2);
         trajL.insert(path {pos});
@@ -164,12 +152,6 @@ trajectory Piece::lDisplacement(Position const & posStart, int step)const{
         Position pos = Position::create_position(cP1,iM2);
         trajL.insert(path {pos});
     }catch(const std::exception &e){}
-
-
-//    if ('a'<=(c+2) && (c+2)<='h'){
-//        if (1<=iP1 && iP1<=8) trajL.insert(path {Position {c+2,iP1}});
-//        if (1<=iM1 && iM1<=8) trajL.insert(path {Position {c+2,iM1}});
-//    }
 
     try{
         Position pos = Position::create_position(cP2,iP1);
@@ -210,7 +192,11 @@ ColorOfPieces Piece::getColor() const{
 void Piece::setMoved() {
     m_hasMoved = true;
 }
-void Piece::setDiagonal(bool move_diag) {}
+
+bool Piece::isKing() const{
+    return false;
+}
+
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/

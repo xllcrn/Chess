@@ -45,6 +45,11 @@ int main() {
     std::cout << board3.moveIsValid(pawn_pos,pawn_pos_vert2);
     std::cout << board3.moveIsValid(pawn_pos,pawn_pos_diag1);
 
+    ChessBoard board4("8/8/8/0000k000/8/8/00P000Q0/8");
+    Position king_pos1 = Position::create_position('e', 4);
+    std::cout << board4.isChess('k');
+    ChessBoard board5("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
+    std::cout << board5.isMate('k');
 
 //    board.movePiece(Position::create_position('e',2),Position::create_position('d',3));
 //    std::cout << board;

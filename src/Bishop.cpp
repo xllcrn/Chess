@@ -18,10 +18,6 @@ Bishop::~Bishop() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool Bishop::isValid(Position const & posBefore, Position const & posAfter){
-    return true;
-}
-
 trajectory Bishop::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory diag;

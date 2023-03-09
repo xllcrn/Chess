@@ -38,6 +38,7 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position queen_pos_vert3= Position::create_position('c',8);
         Position queen_pos_hori1= Position::create_position('a',3);
         Position queen_pos_hori2= Position::create_position('h',3);
+        BOOST_CHECK_EQUAL(false, board.moveIsValid(queen_pos,queen_pos));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_diag1));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_diag2));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_vert1));
@@ -59,6 +60,7 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position king_pos_diag2 = Position::create_position('f', 5);
         Position king_pos_diag3 = Position::create_position('d', 3);
         Position king_pos_diag4 = Position::create_position('f', 3);
+        BOOST_CHECK_EQUAL(false, board.moveIsValid(king_pos,king_pos));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_hori1));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_hori2));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_vert1));
@@ -77,6 +79,7 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position pawn_pos_vert2 = Position::create_position('d', 6);
         Position pawn_pos_diag1 = Position::create_position('c', 5);
         Position pawn_pos_diag2 = Position::create_position('e', 5);
+        BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos,pawn_pos_vert1));
         BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos,pawn_pos_vert2));
         BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos_vert3));
@@ -84,4 +87,26 @@ BOOST_AUTO_TEST_SUITE(chess)
         BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos,pawn_pos_diag2));
     }
 
-    BOOST_AUTO_TEST_SUITE_END()
+    BOOST_AUTO_TEST_CASE(chess_test) {
+        ChessBoard board("8/8/8/0000k000/8/8/00P0Q000/8");
+        BOOST_CHECK_EQUAL(true, board.isChess('k'));
+        ChessBoard board2("8/8/8/0000k000/8/8/00P000R0/8");
+        BOOST_CHECK_EQUAL(false, board2.isChess('k'));
+        ChessBoard board3("8/8/000ppp00/000pkp00/000ppp00/00000H00/00P000R0/8");
+        BOOST_CHECK_EQUAL(true, board.isChess('k'));
+        ChessBoard board4("8/8/8/0000k00r/8/8/00P000R0/8");
+        BOOST_CHECK_EQUAL(false, board4.isChess('k'));
+    }
+
+    BOOST_AUTO_TEST_CASE(mate_test) {
+        ChessBoard board("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
+        BOOST_CHECK_EQUAL(true, board.isMate('k'));
+    }
+
+    BOOST_AUTO_TEST_CASE(chessmate_test) {
+        ChessBoard board("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
+        BOOST_CHECK_EQUAL(true, board.isMate('k'));
+    }
+
+
+BOOST_AUTO_TEST_SUITE_END()

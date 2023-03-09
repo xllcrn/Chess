@@ -10,7 +10,6 @@ class Queen : public Piece{
 public:
     Queen(ColorOfPieces color);
     ~Queen() noexcept override;
-    bool isValid(Position const &,Position const &) override ;
     trajectory drawTraject(Position const &, bool=false) override;
 private:
 };

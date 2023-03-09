@@ -18,10 +18,6 @@ Knight::~Knight() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-bool Knight::isValid(Position const & posBefore, Position const & posAfter){
-    return true;
-}
-
 trajectory Knight::drawTraject(Position const & posStart, bool){
     trajectory traject;
     trajectory ltraj;
