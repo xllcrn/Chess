@@ -35,3 +35,6 @@ tests go in [tests/](tests/) (compiled to `unit_tests` by default).
 - Initialization of the board with a string
 - Pawn displacement : diagonal
 - Chessmate
+- Pawn promotion
+- hasmoved not an attribute of piece anymore (only board role). 
+Hasmoved is stored in the board map, the value becomes a tuple of pointer piece and the boolean. 

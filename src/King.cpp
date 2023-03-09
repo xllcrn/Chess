@@ -18,7 +18,7 @@ King::~King() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory King::drawTraject(Position const & posStart, bool){
+trajectory King::drawTraject(Position const & posStart, bool b1, bool b2){
     trajectory traject;
     trajectory vert, hori, diag;
     auto step = 1;
@@ -33,4 +33,16 @@ trajectory King::drawTraject(Position const & posStart, bool){
 
 bool King::isKing() const{
     return true;
+}
+
+bool King::isInitialPosition(Position const & pos) const{
+    switch (m_color){
+        case(ColorOfPieces::WHITE):
+            if(pos==Position::create_position('e',8)) return true;
+            break;
+        case(ColorOfPieces::BLACK):
+            if(pos==Position::create_position('e',1)) return true;
+            break;
+    }
+    return false;
 }

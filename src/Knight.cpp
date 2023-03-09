@@ -18,7 +18,7 @@ Knight::~Knight() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Knight::drawTraject(Position const & posStart, bool){
+trajectory Knight::drawTraject(Position const & posStart, bool b1, bool b2){
     trajectory traject;
     trajectory ltraj;
     ltraj = lDisplacement(posStart);
@@ -26,3 +26,14 @@ trajectory Knight::drawTraject(Position const & posStart, bool){
     return traject;
 }
 
+bool Knight::isInitialPosition(Position const & pos) const{
+    switch (m_color){
+        case(ColorOfPieces::WHITE):
+            if(pos==Position::create_position('b',8)) return true;
+            break;
+        case(ColorOfPieces::BLACK):
+            if(pos==Position::create_position('b',1)) return true;
+            break;
+    }
+    return false;
+}

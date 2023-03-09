@@ -19,7 +19,7 @@ Pawn::~Pawn() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
+trajectory Pawn::drawTraject(Position const & posStart,bool hasMoved, bool move_diag){
     trajectory traject;
     trajectory traj;
     // if has moved : step 1, if not can be 2
@@ -28,7 +28,7 @@ trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
         traj = diagonal(posStart, step);
     }
     else{
-        if(!m_hasMoved) step=2;
+        if(!hasMoved) step=2;
         traj = vertical(posStart, step);
     }
 
@@ -46,6 +46,31 @@ trajectory Pawn::drawTraject(Position const & posStart, bool move_diag){
     }
     return traject;
 }
+
+bool Pawn::isPromoted(Position const &pos) const {
+    switch (m_color){
+        case(ColorOfPieces::WHITE):
+            if(pos.getY()==8) return true;
+            break;
+        case(ColorOfPieces::BLACK):
+            if(pos.getY()==1) return true;
+            break;
+    }
+    return false;
+}
+
+bool Pawn::isInitialPosition(Position const & pos) const{
+    switch (m_color){
+        case(ColorOfPieces::WHITE):
+            if(pos.getY()==2) return true;
+            break;
+        case(ColorOfPieces::BLACK):
+            if(pos.getY()==7) return true;
+            break;
+    }
+    return false;
+}
+
 
 /* ------------------------------------------------------------------------
  *                        GETTER / SETTER

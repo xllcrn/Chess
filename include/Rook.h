@@ -10,7 +10,8 @@ class Rook : public Piece{
 public:
     Rook(ColorOfPieces color);
     ~Rook() noexcept override;
-    trajectory drawTraject(Position const &, bool=false) override;
+    trajectory drawTraject(Position const &, bool, bool) override;
+    bool isInitialPosition(Position const & pos) const override;
 private:
 };
 

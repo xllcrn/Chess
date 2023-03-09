@@ -10,7 +10,8 @@ class Queen : public Piece{
 public:
     Queen(ColorOfPieces color);
     ~Queen() noexcept override;
-    trajectory drawTraject(Position const &, bool=false) override;
+    trajectory drawTraject(Position const &, bool, bool) override;
+    bool isInitialPosition(Position const & pos) const override;
 private:
 };
 

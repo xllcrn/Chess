@@ -10,8 +10,10 @@ class Bishop : public Piece{
 public:
     Bishop(ColorOfPieces color);
     ~Bishop() noexcept override;
-    trajectory drawTraject(Position const &, bool=false) override;
+    trajectory drawTraject(Position const &, bool, bool) override;
+    bool isInitialPosition(Position const & pos) const override;
 private:
+    bool hasMoved(Position const &);
 };
 
 

@@ -10,7 +10,7 @@
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 Piece::Piece(char type, ColorOfPieces color, int value):
-        m_type(type),m_color(color),m_value(value) {m_hasMoved=false;}
+        m_type(type),m_color(color),m_value(value){}
 
 /* ----------------------------------------------------------
  *      MEMBER METHODS
@@ -189,14 +189,14 @@ ColorOfPieces Piece::getColor() const{
     return m_color;
 }
 
-void Piece::setMoved() {
-    m_hasMoved = true;
-}
-
 bool Piece::isKing() const{
     return false;
 }
 
+
+bool Piece::isPromoted(Position const & pos) const{
+    return false;
+}
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/

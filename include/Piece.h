@@ -30,13 +30,14 @@ public:
     virtual ~Piece() noexcept = default;
     // member methods
     std::string to_String() const;
-    virtual trajectory drawTraject(Position const &, bool=false)=0;
+    virtual trajectory drawTraject(Position const &, bool, bool=false)=0;
     //getter/setter
     char getType() const;
     int getValue() const;
     virtual bool isKing() const;
+    virtual bool isPromoted(Position const &) const;
     ColorOfPieces getColor() const;
-    void setMoved();
+    virtual bool isInitialPosition(Position const &) const=0;
 protected:
     trajectory vertical(Position const &, int step=8) const;
     trajectory horizontal(Position const &, int step=8) const;
@@ -45,7 +46,6 @@ protected:
     char m_type;
     int m_value;
     ColorOfPieces m_color;
-    bool m_hasMoved;
 };
 std::ostream& operator<<(std::ostream& , Piece &);
 std::ostream& operator<<(std::ostream& , ColorOfPieces &);

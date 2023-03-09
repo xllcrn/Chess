@@ -18,7 +18,7 @@ Queen::~Queen() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Queen::drawTraject(Position const & posStart, bool){
+trajectory Queen::drawTraject(Position const & posStart, bool b1, bool b2){
     trajectory traject;
     trajectory vert, hori, diag;
     vert = vertical(posStart);
@@ -28,4 +28,16 @@ trajectory Queen::drawTraject(Position const & posStart, bool){
     traject.insert(hori.begin(),hori.end());
     traject.insert(diag.begin(),diag.end());
     return traject;
+}
+
+bool Queen::isInitialPosition(Position const & pos) const{
+    switch (m_color){
+        case(ColorOfPieces::WHITE):
+            if(pos==Position::create_position('d',8)) return true;
+            break;
+        case(ColorOfPieces::BLACK):
+            if(pos==Position::create_position('d',1)) return true;
+            break;
+    }
+    return false;
 }

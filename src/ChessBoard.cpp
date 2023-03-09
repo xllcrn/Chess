@@ -45,7 +45,6 @@ ChessBoard::ChessBoard(std::string const & boardData):m_scoreW(0),
                                                       m_kingB(Position::create_position('e',8)){
 //  Create the pieces of the chessboard
     piecesSet(boardData);
-    std::cout << "---It's white who play---" << std::endl;
 }
 /* ----------------------------------------------------------
  *      MEMBER METHODS
@@ -55,27 +54,18 @@ ChessBoard::ChessBoard(std::string const & boardData):m_scoreW(0),
 void ChessBoard::piecesSet(std::string const & boardData){
     auto rank=1;
     auto i=-1;
-    ColorOfPieces color=ColorOfPieces::WHITE;
     std::string abc{"abcdefgh"};
-    std::string type{"rhbqkpRHBQKP"};
+    std::string pieces{"rhbqkpRHBQKP"};
     for (auto const & C : boardData){
         ++i;
         if(std::isdigit(C)) continue;
-        std::size_t found = type.find(C);
+        std::size_t found = pieces.find(C);
         if (found!=std::string::npos){
             if (rank>8) assert("Bad string initialization to set boardchess pieces. Too much characters");
-            color=ColorOfPieces::WHITE;
+            ColorOfPieces color=ColorOfPieces::WHITE;
             if (isupper(C)) color=ColorOfPieces::BLACK;
-            char c = tolower(C);
-            if(c=='q') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Queen> (Queen(color))});
-            if(c=='r') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Rook> (Rook(color))});
-            if(c=='b') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Bishop> (Bishop(color))});
-            if(c=='h') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Knight> (Knight(color))});
-            if(c=='p') m_board.insert({Position::create_position(abc[i],rank), std::make_shared<Pawn> (Pawn(color))});
-            if(c=='k') {
-                m_board.insert({Position::create_position(abc[i], rank), std::make_shared<King>(King(color))});
-                setKingPosition(Position::create_position(abc[i], rank), color);
-            }
+            Position pos=Position::create_position(abc[i],rank);
+            createPiece(C, pos, color);
         }
         else if (C=='/'){
             i = -1;
@@ -87,6 +77,24 @@ void ChessBoard::piecesSet(std::string const & boardData){
     }
 }
 
+void ChessBoard::createPiece(char c, Position const & pos, ColorOfPieces color) {
+    bool hasMoved = true;
+    if (c!='q' || c!='r' || c!='b' || c!='h' || c!='p' || c!='k'){
+        assert("Bad char to create piece");
+    }
+    std::shared_ptr<Piece> p_piece ;
+    if(tolower(c)=='q') p_piece = std::make_shared<Queen> (Queen(color));
+    if(tolower(c)=='r') p_piece = std::make_shared<Rook> (Rook(color));
+    if(tolower(c)=='b') p_piece = std::make_shared<Bishop> (Bishop(color));
+    if(tolower(c)=='h') p_piece = std::make_shared<Knight> (Knight(color));
+    if(tolower(c)=='p') p_piece = std::make_shared<Pawn> (Pawn(color));
+    if(tolower(c)=='k') {
+        p_piece = std::make_shared<King> (King(color));
+        setKingPosition(pos, color);
+    }
+    if (p_piece->isInitialPosition(pos)) hasMoved = false;
+    m_board.emplace(pos,std::make_tuple(p_piece, hasMoved));
+}
 
  /*      PRINT
   * ----------------------------------------------------------*/
@@ -96,7 +104,8 @@ void ChessBoard::piecesSet(std::string const & boardData){
 std::vector<char> ChessBoard::chessboardToChar() const{
     std::vector<char> print_board(m_lines*m_lines,' ');
     for (auto const & b : m_board){
-        print_board[(b.first).getCoord()] = (b.second)->getType();
+        auto&[p_piece,hasMoved] = b.second;
+        print_board[(b.first).getCoord()] = p_piece->getType();
     }
     return print_board;
 }
@@ -153,39 +162,31 @@ void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
     }
 
     // take the piece to move
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board[pBefore];
+    auto[p_piece,hasMoved] = m_board.at(pBefore);
     // is there a piece at the final position?
-    std::shared_ptr<Piece> p_piece_after;
-    bool isPieceAfter = false;
-    if (m_board.find(pAfter) != m_board.end()){
-        isPieceAfter=true;
-        p_piece_after = m_board[pAfter];
-    }
+    bool isPieceAfter = m_board.find(pAfter) != m_board.end();
 
-    /*          check : the right color to play ?
+    /*          check : the right color to play ? --> move it to game!!!
     ***************************************************/
-    if (p_piece->getColor() != m_color_active){
-        std::cout << "Displacement is NOT VALID" << std::endl;
-        return ;
-    }
+//    if (p_piece->getColor() != m_color_active){
+//        std::cout << "Displacement is NOT VALID" << std::endl;
+//        return ;
+//    }
 
-    // a piece is at pAfter
-    if (isPieceAfter) {
+    if (isPieceAfter) {                                             // there is a piece at final position
+        auto&[p_piece_after,hasMoved] = m_board.at(pAfter);
         setScore(p_piece_after->getValue(), p_piece->getColor());
-        m_board.erase(pBefore);
         m_board.erase(pAfter);
-        m_board[pAfter] = p_piece;
-    } else {
-        m_board.erase(pBefore);
-        m_board[pAfter] = p_piece;
     }
-    p_piece-> setMoved();
-    if(p_piece->isKing()) setKingPosition(pAfter, m_color_active);
-    m_color_active = switch_color(m_color_active);
-    if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
-    if (m_color_active==ColorOfPieces::BLACK)std::cout << "---It's black who play---" << std::endl;
+    m_board.erase(pBefore);
+    m_board.emplace(pAfter,std::make_tuple(p_piece, true));
 
+    // side effects
+    if(p_piece->isKing()) setKingPosition(pAfter, m_color_active);
+    switch_color(m_color_active);
+    pawnPromotion(pAfter);
+//    if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
+//    if (m_color_active==ColorOfPieces::BLACK)std::cout << "---It's black who play---" << std::endl;
 }
 
 
@@ -204,20 +205,15 @@ bool ChessBoard::moveIsValid(Position const & pBefore, Position const & pAfter) 
     }
 
     // take the piece to move
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board.at(pBefore);
+    auto&[p_piece,hasMovedB] = m_board.at(pBefore);
     // is there a piece at the final position?
-    std::shared_ptr<Piece> p_piece_after;
-    bool isPieceAfter = false;
-    if (m_board.find(pAfter) != m_board.end()){
-        isPieceAfter=true;
-        p_piece_after = m_board.at(pAfter);
-    }
+    bool isPieceAfter = m_board.find(pAfter) != m_board.end();
 
 
     /*          check : piece before & after of different color ?
     **************************************************************/
     if (isPieceAfter) {
+        auto&[p_piece_after,hasMovedA] = m_board.at(pAfter);
         if (p_piece->getColor() == p_piece_after->getColor()) {
             return false;
         }
@@ -225,7 +221,7 @@ bool ChessBoard::moveIsValid(Position const & pBefore, Position const & pAfter) 
 
     // Displacement
     trajectory pathVector;
-    pathVector = p_piece->drawTraject(pBefore,isPieceAfter);
+    pathVector = p_piece->drawTraject(pBefore,hasMovedB,isPieceAfter);
     pathVector = correctTraject(pathVector, pAfter);
 
     /*          check : is there a path ?
@@ -247,10 +243,9 @@ void ChessBoard::moveHelp(Position const & pBefore) {
         return;
     }
 
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board[pBefore];
+    auto&[p_piece,hasMoved] = m_board.at(pBefore);
     trajectory pathVector;
-    pathVector = p_piece->drawTraject(pBefore);
+    pathVector = p_piece->drawTraject(pBefore,hasMoved);
     pathVector = correctTraject(pathVector);
     std::cout << "All possible moves for the piece" << std::endl;
     std::cout << *p_piece << std::endl;
@@ -364,7 +359,8 @@ bool ChessBoard::isChess(char const & king) const {
 bool ChessBoard::chessTest(Position const & pos, ColorOfPieces color_attacker) const{
     bool valid{false};
     for (auto const & b : m_board){
-        if (color_attacker!= (b.second)->getColor()){
+        auto&[p_piece,hasMoved] = b.second;
+        if (color_attacker!= p_piece->getColor()){
             continue;
         }
         else if(b.first==pos){
@@ -372,7 +368,6 @@ bool ChessBoard::chessTest(Position const & pos, ColorOfPieces color_attacker) c
         }
         else{
             valid = moveIsValid(b.first,pos);
-            std::cout << "check if move is valid" << valid<< std::endl;
             if(valid) break;
         }
     }
@@ -394,8 +389,7 @@ void ChessBoard::checkKing(char const & king) const {
     }
 
     // 4 - check if the piece found is a king
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board.at(kingPos);
+    auto&[p_piece,hasMoved] =m_board.at(kingPos);
     if (!(p_piece->isKing())) {
         assert("The piece found at the position is not a king!");
     }
@@ -424,12 +418,11 @@ bool ChessBoard::mateTest(Position const & pos, ColorOfPieces color_attacker) co
     bool is_attacked{false};
 
 //  retrieve king piece
-    std::shared_ptr<Piece> p_piece;
-    p_piece = m_board.at(pos);
+    auto&[p_piece,hasMoved] =m_board.at(pos);
 
     // check if mate
     trajectory pathVector;
-    pathVector = p_piece->drawTraject(pos);
+    pathVector = p_piece->drawTraject(pos,hasMoved);
     // loop on paths
     for (path const & path1 : pathVector) {
         // loop on positions
@@ -457,8 +450,33 @@ bool ChessBoard::isChessMate() const{
 
 /*      PROMOTION
  * ----------------------------------------------------------*/
+void ChessBoard::pawnPromotion(Position const & pos){
+    char promo;
+    std::string pieces{"rhbqkpRHBQKP"};
 
+    // check if the piece is a pawn to promote
+    auto&[p_piece,hasMoved] =m_board.at(pos);
+    if(!p_piece->isPromoted(pos)) return;
 
+    // ask user
+    std::cout << "Pawn promotion, choose between r, h, b and q" << std::endl;
+    while(!( std::cin >> promo) || pieces.find(promo)==std::string::npos ){
+        std::cout << "Please, choose between r, h, b and q" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    promotion(promo, pos);
+
+}
+
+void ChessBoard::promotion(char const &promo, Position const & pos){
+    auto&[p_piece,hasMoved] =m_board.at(pos);
+    ColorOfPieces color=p_piece->getColor();
+    // erase pos+pawn of the board
+    m_board.erase(pos);
+    // create the new piece & add the piece to the board
+    createPiece(tolower(promo),pos,color);
+}
 
 /* ----------------------------------------------------------
  *      SETTER/ GETTER
@@ -490,14 +508,6 @@ int ChessBoard::getScoreB() const{
     return m_scoreB;
 }
 
-std::shared_ptr<Piece> ChessBoard::getPiece(Position const & pos) {
-    return m_board[pos];
-}
-
-ColorOfPieces ChessBoard::getPieceColor(Position const & pos) {
-    return m_board[pos]->getColor();
-}
-
 void ChessBoard::printScores(){
     std::cout << "The score of WHITE is : " << m_scoreW << std::endl;
     std::cout << "The score of BLACK is : " << m_scoreB << std::endl;
@@ -505,12 +515,14 @@ void ChessBoard::printScores(){
 
 /// @brief Switch the active color
 /// @param the color to be set active
-ColorOfPieces ChessBoard::switch_color(ColorOfPieces color) const{
+void ChessBoard::switch_color(ColorOfPieces color){
     switch (color) {
         case ColorOfPieces::WHITE:
-            return ColorOfPieces::BLACK;
+            m_color_active = ColorOfPieces::BLACK;
+            break;
         case ColorOfPieces::BLACK:
-            return ColorOfPieces::WHITE;
+            m_color_active = ColorOfPieces::WHITE;
+            break;
     }
 }
 
@@ -538,6 +550,11 @@ Position ChessBoard::getKingPosition(char const & king)const{
     else{
         assert("Cannot return position");
     }
+}
+
+char ChessBoard::getPieceType(Position const & pos)const{
+    auto[p_piece,hasMoved] =m_board.at(pos);
+    return p_piece->getType();
 }
 /* ----------------------------------------------------------
  *      EXTERNAL

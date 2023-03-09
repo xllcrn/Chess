@@ -21,32 +21,37 @@ public:
     void moveHelp(Position const &);
     int getScoreW() const;
     int getScoreB() const;
-    std::shared_ptr<Piece> getPiece(Position const &) ;
-    ColorOfPieces getPieceColor(Position const &) ;
     void printScores();
-    void setKingPosition(Position const &, ColorOfPieces const &);
     bool moveIsValid(Position const &, Position const &) const;
     bool isChess(char const &) const;
     bool isMate(char const &) const;
     bool isChessMate() const;
+    void pawnPromotion(Position const &);
+    char getPieceType(Position const & pos)const;
 private:
-    void piecesSet(ColorOfPieces);
+    // methods
+    // ----------
+    void setKingPosition(Position const &, ColorOfPieces const &);
+    void createPiece(char, Position const &, ColorOfPieces);
     void piecesSet(std::string const &);
-    int m_scoreW;
-    int m_scoreB;
-    Position m_kingW;
-    Position m_kingB;
+    void promotion(char const &, Position const & pos);
     Position getKingPosition(char const &)const;
-    ColorOfPieces m_color_active;
     void checkKing(char const &) const;
     bool chessTest(Position const &, ColorOfPieces) const;
     bool mateTest(Position const &, ColorOfPieces) const;
     void setScore(int const &, ColorOfPieces const &);
-    std::map<Position,std::shared_ptr<Piece>> m_board;
-    static int m_lines;
-    ColorOfPieces switch_color(ColorOfPieces) const;
+    void switch_color(ColorOfPieces);
     trajectory correctTraject(trajectory const &) const;
     trajectory correctTraject(trajectory const &, Position const &) const;
+    // attributes
+    // ----------
+    int m_scoreW;
+    int m_scoreB;
+    Position m_kingW;
+    Position m_kingB;
+    ColorOfPieces m_color_active;
+    std::map<Position, std::tuple<std::shared_ptr<Piece>, bool>> m_board;
+    static int m_lines;
 };
 std::ostream& operator<<(std::ostream& , ChessBoard&);
 #endif //CHESS_BOARD_H
