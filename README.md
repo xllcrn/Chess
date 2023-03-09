@@ -34,3 +34,4 @@ tests go in [tests/](tests/) (compiled to `unit_tests` by default).
 - Testbase
 - Initialization of the board with a string
 - Pawn displacement : diagonal
+- Chessmate
