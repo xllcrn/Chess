@@ -28,9 +28,12 @@ public:
     bool isChessMate() const;
     void pawnPromotion(Position const &);
     char getPieceType(Position const & pos)const;
+    bool isCastling(Position const & pBeforeK, Position const & pAfterK) const;
 private:
     // methods
     // ----------
+    bool getCastling(ColorOfPieces color)const;
+    void setCastling(bool, ColorOfPieces);
     void setKingPosition(Position const &, ColorOfPieces const &);
     void createPiece(char, Position const &, ColorOfPieces);
     void piecesSet(std::string const &);
@@ -52,6 +55,8 @@ private:
     ColorOfPieces m_color_active;
     std::map<Position, std::tuple<std::shared_ptr<Piece>, bool>> m_board;
     static int m_lines;
+    bool m_castlingW;
+    bool m_castlingB;
 };
 std::ostream& operator<<(std::ostream& , ChessBoard&);
 #endif //CHESS_BOARD_H

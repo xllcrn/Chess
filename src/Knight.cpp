@@ -29,10 +29,12 @@ trajectory Knight::drawTraject(Position const & posStart, bool b1, bool b2){
 bool Knight::isInitialPosition(Position const & pos) const{
     switch (m_color){
         case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('b',8)) return true;
+            if(pos==Position::create_position('b',1)) return true;
+            if(pos==Position::create_position('g',1)) return true;
             break;
         case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('b',1)) return true;
+            if(pos==Position::create_position('b',8)) return true;
+            if(pos==Position::create_position('g',8)) return true;
             break;
     }
     return false;

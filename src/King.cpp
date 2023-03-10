@@ -38,10 +38,10 @@ bool King::isKing() const{
 bool King::isInitialPosition(Position const & pos) const{
     switch (m_color){
         case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('e',8)) return true;
+            if(pos==Position::create_position('e',1)) return true;
             break;
         case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('e',1)) return true;
+            if(pos==Position::create_position('e',8)) return true;
             break;
     }
     return false;

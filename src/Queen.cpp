@@ -33,10 +33,10 @@ trajectory Queen::drawTraject(Position const & posStart, bool b1, bool b2){
 bool Queen::isInitialPosition(Position const & pos) const{
     switch (m_color){
         case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('d',8)) return true;
+            if(pos==Position::create_position('d',1)) return true;
             break;
         case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('d',1)) return true;
+            if(pos==Position::create_position('d',8)) return true;
             break;
     }
     return false;

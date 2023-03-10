@@ -12,6 +12,7 @@ public:
     ~Rook() noexcept override;
     trajectory drawTraject(Position const &, bool, bool) override;
     bool isInitialPosition(Position const & pos) const override;
+    bool isRook() const override;
 private:
 };
 

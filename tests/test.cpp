@@ -126,4 +126,29 @@ BOOST_AUTO_TEST_SUITE(chess)
         BOOST_CHECK_EQUAL(true, board.isChessMate());
     }
 
+    BOOST_AUTO_TEST_CASE(castling_test) {
+        // short castling white
+        ChessBoard short_board1("rhbqk00r/pppp0ppp/00000h00/00b0p000/00B0P000/00H00000/PPPP0PPP/R0BQK0HR");
+        Position king_pos  = Position::create_position('e', 1);
+        Position king_pos1  = Position::create_position('g', 1);
+        Position rook_pos1  = Position::create_position('f', 1);
+        short_board1.movePiece(king_pos,king_pos1);
+        BOOST_CHECK_EQUAL('k', short_board1.getPieceType(king_pos1));
+        BOOST_CHECK_EQUAL('r', short_board1.getPieceType(rook_pos1));
+        // short castling black
+        ChessBoard short_board2("r000kbhr/pbppqppp/00h00000/0000p000/00B0P000/00HP0H00/PPP00PPP/R0BQK00R");
+        Position King_pos   = Position::create_position('e', 8);
+        Position King_pos1  = Position::create_position('g', 8);
+        Position Rook_pos1  = Position::create_position('f', 8);
+        short_board2.movePiece(King_pos,King_pos1);
+        BOOST_CHECK_EQUAL('K', short_board2.getPieceType(King_pos1));
+        BOOST_CHECK_EQUAL('R', short_board2.getPieceType(Rook_pos1));
+        // long castling white
+        Position king_posl  = Position::create_position('c', 1);
+        Position rook_posl  = Position::create_position('d', 1);
+        short_board2.movePiece(king_pos,king_posl);
+        BOOST_CHECK_EQUAL('k', short_board2.getPieceType(king_posl));
+        BOOST_CHECK_EQUAL('r', short_board2.getPieceType(rook_posl));
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

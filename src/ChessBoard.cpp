@@ -28,7 +28,9 @@ ChessBoard::ChessBoard():m_scoreW(0),
                          m_scoreB(0),
                          m_color_active(ColorOfPieces::WHITE),
                          m_kingW(Position::create_position('e',1)),
-                         m_kingB(Position::create_position('e',8)){
+                         m_kingB(Position::create_position('e',8)),
+                         m_castlingW(false),
+                         m_castlingB(false){
     //  Create the pieces of the chessboard : WHITE
     piecesSet("rhbqkbhr/pppppppp/8/8/8/8/PPPPPPPP/RHBQKBHR");
 //  Create the pieces of the chessboard : BLACK
@@ -42,7 +44,9 @@ ChessBoard::ChessBoard(std::string const & boardData):m_scoreW(0),
                                                       m_scoreB(0),
                                                       m_color_active(ColorOfPieces::WHITE),
                                                       m_kingW(Position::create_position('e',1)),
-                                                      m_kingB(Position::create_position('e',8)){
+                                                      m_kingB(Position::create_position('e',8)),
+                                                      m_castlingW(false),
+                                                      m_castlingB(false){
 //  Create the pieces of the chessboard
     piecesSet(boardData);
 }
@@ -155,34 +159,65 @@ std::string ChessBoard::boardToString(std::vector<char> const & print_board) con
 /// @param final position
 void ChessBoard::movePiece(Position const & pBefore, Position const & pAfter){
 
-    bool valid = moveIsValid(pBefore,pAfter);
-    if (!valid){
+    // the move is valid ?
+    bool rules_valid    = moveIsValid(pBefore,pAfter);
+    bool castling_valid = isCastling(pBefore, pAfter);
+    if (!rules_valid && !castling_valid){
         std::cout << "Displacement is NOT VALID" << std::endl;
         return;
     }
 
     // take the piece to move
     auto[p_piece,hasMoved] = m_board.at(pBefore);
-    // is there a piece at the final position?
-    bool isPieceAfter = m_board.find(pAfter) != m_board.end();
 
-    /*          check : the right color to play ? --> move it to game!!!
-    ***************************************************/
-//    if (p_piece->getColor() != m_color_active){
-//        std::cout << "Displacement is NOT VALID" << std::endl;
-//        return ;
-//    }
+    if(rules_valid){
+        // is there a piece at the final position?
+        bool isPieceAfter = m_board.find(pAfter) != m_board.end();
 
-    if (isPieceAfter) {                                             // there is a piece at final position
-        auto&[p_piece_after,hasMoved] = m_board.at(pAfter);
-        setScore(p_piece_after->getValue(), p_piece->getColor());
-        m_board.erase(pAfter);
+        /*          check : the right color to play ? --> move it to game!!!
+        ***************************************************/
+    //    if (p_piece->getColor() != m_color_active){
+    //        std::cout << "Displacement is NOT VALID" << std::endl;
+    //        return ;
+    //    }
+
+        if (isPieceAfter) {                                             // there is a piece at final position
+            auto&[p_piece_after,hasMoved] = m_board.at(pAfter);
+            setScore(p_piece_after->getValue(), p_piece->getColor());
+            m_board.erase(pAfter);
+        }
+        m_board.erase(pBefore);
+        m_board.emplace(pAfter,std::make_tuple(p_piece, true));
     }
-    m_board.erase(pBefore);
-    m_board.emplace(pAfter,std::make_tuple(p_piece, true));
+    else if(castling_valid){
+        // king move
+        m_board.erase(pBefore);
+        m_board.emplace(pAfter,std::make_tuple(p_piece, true));
+        // rook move
+        int line = pBefore.getY();
+        Position posShort = Position::create_position('g',line);
+        Position posLong  = Position::create_position('c',line);
+        Position pBeforeR = Position::create_position('a',1);
+        Position pAfterR  = Position::create_position('a',1);
+        if(pAfter==posShort){
+            pBeforeR = Position::create_position('h',line);
+            pAfterR  = Position::create_position('f',line);
+            auto[p_pieceR,hasMoved] = m_board.at(pBeforeR);
+            m_board.erase(pBeforeR);
+            m_board.emplace(pAfterR,std::make_tuple(p_pieceR, true));
+        }
+        else {
+            pBeforeR = Position::create_position('a',line);
+            pAfterR  = Position::create_position('d',line);
+            auto[p_pieceR,hasMoved] = m_board.at(pBeforeR);
+            m_board.erase(pBeforeR);
+            m_board.emplace(pAfterR,std::make_tuple(p_pieceR, true));
+        }
+        setCastling(true, p_piece->getColor());
+    }
 
     // side effects
-    if(p_piece->isKing()) setKingPosition(pAfter, m_color_active);
+    if(p_piece->isKing()) setKingPosition(pAfter, p_piece->getColor());
     switch_color(m_color_active);
     pawnPromotion(pAfter);
 //    if (m_color_active==ColorOfPieces::WHITE)std::cout << "---It's white who play---" << std::endl;
@@ -326,6 +361,71 @@ trajectory ChessBoard::correctTraject(trajectory const & traject, Position const
         }
     }
     return new_traject;
+}
+
+/*      CASTLING
+ * ----------------------------------------------------------*/
+/// @brief Check if there is castling
+/// @param initial position
+/// @param final position
+bool ChessBoard::isCastling(Position const & pBeforeK, Position const & pAfterK) const {
+/*    Neither the king nor the rook has previously moved.
+      There are no pieces between the king and the rook.
+      The king is not currently in check.
+      The king does not pass through or finish on a square that is attacked by an enemy piece.
+*/
+
+    auto&[p_pieceK,hasMovedK] = m_board.at(pBeforeK);
+    // is there a king at initial position
+    if (!(p_pieceK->isKing())) return false;
+    // castling only once
+    if (getCastling(p_pieceK->getColor())) return false;
+    // short castling/ long castling
+    int line = pBeforeK.getY();
+    Position posShort = Position::create_position('g',line);
+    Position posLong  = Position::create_position('c',line);
+    Position pBeforeR = Position::create_position('a',1);
+    Position pAfterR  = Position::create_position('a',1);
+    Position pEmpty   = Position::create_position('b',line);
+    // pAfter is position of small/long castling
+    if (pAfterK==posShort) {
+        pBeforeR = Position::create_position('h', line);
+        pAfterR = Position::create_position('f', line);
+    }
+    else if (pAfterK==posLong){
+        pBeforeR = Position::create_position('a',line);
+        pAfterR = Position::create_position('d',line);
+    }
+    else{
+        return false;
+    }
+    // check if there is a rook
+    if (m_board.find(pBeforeR) == m_board.end()) return false;
+    auto[p_pieceR,hasMovedR] = m_board.at(pBeforeR);
+    if (!(p_pieceR->isRook())) return false;
+    if (p_pieceR->getColor() != p_pieceK->getColor()) return false;
+
+    // never moved
+    if (hasMovedK || hasMovedR) return false;
+
+    // no piece between the king and the rook
+    if (m_board.find(pAfterR) != m_board.end()) return false;
+    if (m_board.find(pAfterK) != m_board.end()) return false;
+    if (pAfterK==posLong){
+        if (m_board.find(pEmpty) != m_board.end()) return false;
+    }
+
+    // king cannot be in check
+    if (isChess(p_pieceK->getType())) return false;
+
+    // the empty positions cannot be in check
+    ColorOfPieces color_attacker{ColorOfPieces::BLACK};
+    if (p_pieceK->getColor() == color_attacker) color_attacker = ColorOfPieces::WHITE;
+
+    if(chessTest(pAfterK, color_attacker)) return false;
+    if(chessTest(pAfterR, color_attacker)) return false;
+    if (pAfterK==posLong && chessTest(pEmpty, color_attacker)) return false;
+    return true;
 }
 
 /*      CHESSMATE
@@ -522,6 +622,30 @@ void ChessBoard::switch_color(ColorOfPieces color){
             break;
         case ColorOfPieces::BLACK:
             m_color_active = ColorOfPieces::WHITE;
+            break;
+    }
+}
+
+/// @brief Take boolean castling depending on color
+/// @param the color to be set active
+bool ChessBoard::getCastling(ColorOfPieces color)const{
+    switch (color) {
+        case ColorOfPieces::WHITE:
+            return m_castlingW;
+            break;
+        case ColorOfPieces::BLACK:
+            return m_castlingB;
+            break;
+    }
+}
+
+void ChessBoard::setCastling(bool castling, ColorOfPieces color){
+    switch (color) {
+        case ColorOfPieces::WHITE:
+            m_castlingW = castling;
+            break;
+        case ColorOfPieces::BLACK:
+            m_castlingB = castling;
             break;
     }
 }

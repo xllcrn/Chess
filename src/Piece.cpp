@@ -46,7 +46,9 @@ trajectory Piece::vertical(Position const & posStart, int step)const{
         path2.push_back(Position::create_position(posStart.getX(),i));
         if (++istep==step) break;
     }
-    trajectory trajVert({path1,path2});
+    trajectory trajVert;
+    if(!std::empty(path1)) trajVert.insert(path1);
+    if(!std::empty(path2)) trajVert.insert(path2);
     return trajVert;
 }
 
@@ -92,7 +94,11 @@ trajectory Piece::diagonal(Position const & posStart, int step) const{
         else{break;}
     }
 
-    trajectory trajVert({diagA1,diagA2,diagB1,diagB2});
+    trajectory trajVert;
+    if(!std::empty(diagA1)) trajVert.insert(diagA1);
+    if(!std::empty(diagA2)) trajVert.insert(diagA2);
+    if(!std::empty(diagB1)) trajVert.insert(diagB1);
+    if(!std::empty(diagB2)) trajVert.insert(diagB2);
     return trajVert;
 }
 
@@ -109,8 +115,10 @@ trajectory Piece::horizontal(Position const & posStart, int step)const{
         path2.push_back(Position::create_position(c,posStart.getY()));
         if (++istep==step) break;
     }
-    trajectory trajVert({path1,path2});
-    return trajVert;
+    trajectory trajHori;
+    if(!std::empty(path1)) trajHori.insert(path1);
+    if(!std::empty(path2)) trajHori.insert(path2);
+    return trajHori;
 }
 
 trajectory Piece::lDisplacement(Position const & posStart, int step)const{
@@ -192,7 +200,9 @@ ColorOfPieces Piece::getColor() const{
 bool Piece::isKing() const{
     return false;
 }
-
+bool Piece::isRook() const{
+    return false;
+}
 
 bool Piece::isPromoted(Position const & pos) const{
     return false;

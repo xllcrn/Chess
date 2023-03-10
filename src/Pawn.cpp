@@ -33,7 +33,7 @@ trajectory Pawn::drawTraject(Position const & posStart,bool hasMoved, bool move_
     }
 
     // only moving forward
-    for (path const & path1: traj){
+    for (auto const & path1: traj){
         Position pos = path1[0];
         switch (m_color){
             case(ColorOfPieces::WHITE):

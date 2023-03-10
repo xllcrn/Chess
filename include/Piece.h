@@ -35,6 +35,7 @@ public:
     char getType() const;
     int getValue() const;
     virtual bool isKing() const;
+    virtual bool isRook() const;
     virtual bool isPromoted(Position const &) const;
     ColorOfPieces getColor() const;
     virtual bool isInitialPosition(Position const &) const=0;
