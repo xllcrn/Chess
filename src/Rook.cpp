@@ -18,7 +18,7 @@ Rook::~Rook() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Rook::drawTraject(Position const & posStart, bool b1, bool b2){
+trajectory Rook::drawTraject(Position const & posStart, bool b1){
     trajectory traject;
     trajectory vert, hori, diag;
     vert = vertical(posStart);

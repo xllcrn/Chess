@@ -18,7 +18,7 @@ Bishop::~Bishop() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Bishop::drawTraject(Position const & posStart, bool b1, bool b2){
+trajectory Bishop::drawTraject(Position const & posStart, bool b1){
     trajectory traject;
     trajectory diag;
     diag = diagonal(posStart);

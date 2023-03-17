@@ -10,7 +10,7 @@ class King :public Piece {
 public:
     King(ColorOfPieces color);
     ~King() noexcept override;
-    trajectory drawTraject(Position const &, bool, bool);
+    trajectory drawTraject(Position const &, bool);
     bool isKing() const override;
     bool isInitialPosition(Position const & pos) const override;
 private:

@@ -30,7 +30,7 @@ public:
     virtual ~Piece() noexcept = default;
     // member methods
     std::string to_String() const;
-    virtual trajectory drawTraject(Position const &, bool, bool=false)=0;
+    virtual trajectory drawTraject(Position const &, bool)=0;
     //getter/setter
     char getType() const;
     int getValue() const;

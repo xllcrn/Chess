@@ -19,18 +19,17 @@ Pawn::~Pawn() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Pawn::drawTraject(Position const & posStart,bool hasMoved, bool move_diag){
+trajectory Pawn::drawTraject(Position const & posStart,bool hasMoved){
     trajectory traject;
-    trajectory traj;
+    trajectory vert, traj, diag;
     // if has moved : step 1, if not can be 2
     auto step = 1;
-    if (move_diag){
-        traj = diagonal(posStart, step);
-    }
-    else{
-        if(!hasMoved) step=2;
-        traj = vertical(posStart, step);
-    }
+    diag= diagonal(posStart, step);
+    traj.insert(diag.begin(),diag.end());
+
+    if(!hasMoved) step=2;
+    vert = vertical(posStart, step);
+    traj.insert(vert.begin(),vert.end());
 
     // only moving forward
     for (auto const & path1: traj){

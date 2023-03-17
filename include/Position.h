@@ -18,6 +18,7 @@ public:
     unsigned int const & getY() const;
     int getCoord() const;
     static Position create_position(char const &, unsigned int const &);
+    static Position create_init_position();
 private:
     char m_line;
     unsigned int m_column;

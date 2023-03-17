@@ -19,6 +19,10 @@ Position Position::create_position(char const &line , unsigned int const &column
     return {line,column};
 }
 
+Position Position::create_init_position(){
+    return {'z',0};
+}
+
 Position::Position(char const & x,unsigned int const &y):m_line(x),m_column(y){
 //    int lettre=x;
 //    assert(lettre>96 && lettre<105 && "Letter is not conform : should be between a and h included");
@@ -31,7 +35,7 @@ Position::Position(char const & x,unsigned int const &y):m_line(x),m_column(y){
 
 std::string Position::to_String() const {
     std::ostringstream ostr;
-    ostr << "(" << m_line << "," << m_column << ") \n";
+    ostr << "(" << m_line << "," << m_column << ")";
     return ostr.str();
 }
 

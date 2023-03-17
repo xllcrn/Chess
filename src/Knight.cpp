@@ -18,7 +18,7 @@ Knight::~Knight() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Knight::drawTraject(Position const & posStart, bool b1, bool b2){
+trajectory Knight::drawTraject(Position const & posStart, bool b1){
     trajectory traject;
     trajectory ltraj;
     ltraj = lDisplacement(posStart);

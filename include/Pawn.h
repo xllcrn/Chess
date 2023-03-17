@@ -11,7 +11,7 @@ class Pawn : public Piece {
 public:
     Pawn(ColorOfPieces color);
     ~Pawn() noexcept override;
-    trajectory drawTraject(Position const &, bool, bool) override;
+    trajectory drawTraject(Position const &, bool) override;
     bool isPromoted(Position const &) const override;
     bool isInitialPosition(Position const & pos) const override;
 private:

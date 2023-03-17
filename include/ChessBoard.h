@@ -9,29 +9,43 @@
 #include <iostream>
 #include "Position.h"
 #include "Piece.h"
+#include "ChessMove.h"
 #include <map>
+
+enum class ChessMateChoice
+{
+    CHESS=1,       ///< chess
+    MATE=2,        ///< mate
+    CHESSMATE=3,    ///< chessmate
+    NOCHESSMATE=4  ///< no chessmate
+};
 
 class ChessBoard final {
 public:
     ChessBoard();
     ChessBoard(std::string const &);
+    ChessBoard(std::string const &, char);
     std::vector<char> chessboardToChar() const;
     std::string boardToString(std::vector<char> const &) const;
-    void movePiece(Position const&, Position const&);
+    bool movePiece(Position const&, Position const&, bool =true);
     void moveHelp(Position const &);
     int getScoreW() const;
     int getScoreB() const;
     void printScores();
-    bool moveIsValid(Position const &, Position const &) const;
     bool isChess(char const &) const;
     bool isMate(char const &) const;
     bool isChessMate() const;
     void pawnPromotion(Position const &);
     char getPieceType(Position const & pos)const;
     bool isCastling(Position const & pBeforeK, Position const & pAfterK) const;
+    std::vector<ChessMove> potentialMoves(ColorOfPieces);
+    bool isChessMate(ChessMateChoice const &, char const &) const;
+    bool isMoveValid(Position const &, Position const &) const;
 private:
     // methods
     // ----------
+    ColorOfPieces getColorfromChar(char c)const;
+    void printActiveColor()const;
     bool getCastling(ColorOfPieces color)const;
     void setCastling(bool, ColorOfPieces);
     void setKingPosition(Position const &, ColorOfPieces const &);
@@ -39,13 +53,13 @@ private:
     void piecesSet(std::string const &);
     void promotion(char const &, Position const & pos);
     Position getKingPosition(char const &)const;
-    void checkKing(char const &) const;
-    bool chessTest(Position const &, ColorOfPieces) const;
+    bool checkKing(char const &) const;
+    bool isAttacked(Position const &, std::vector<Position> const &) const;
     bool mateTest(Position const &, ColorOfPieces) const;
     void setScore(int const &, ColorOfPieces const &);
-    void switch_color(ColorOfPieces);
-    trajectory correctTraject(trajectory const &) const;
-    trajectory correctTraject(trajectory const &, Position const &) const;
+    trajectory drawPotentials(Position const &, bool =false) const;
+    std::vector<Position> planAttacked(ColorOfPieces, bool=false) const;
+    ChessMateChoice checkChessMate(char const & ) const ;
     // attributes
     // ----------
     int m_scoreW;
@@ -59,4 +73,8 @@ private:
     bool m_castlingB;
 };
 std::ostream& operator<<(std::ostream& , ChessBoard&);
+std::ostream& operator<<(std::ostream& , ColorOfPieces);
+ColorOfPieces switch_color(ColorOfPieces);
+ColorOfPieces switch_color(char);
+ChessBoard play(ChessMove move, ChessBoard board);
 #endif //CHESS_BOARD_H

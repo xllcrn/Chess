@@ -18,7 +18,7 @@ King::~King() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory King::drawTraject(Position const & posStart, bool b1, bool b2){
+trajectory King::drawTraject(Position const & posStart, bool b1){
     trajectory traject;
     trajectory vert, hori, diag;
     auto step = 1;

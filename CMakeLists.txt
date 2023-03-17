@@ -52,7 +52,9 @@ set(SOURCES          # All .cpp files in src/
         src/Position.cpp
         src/Queen.cpp
         src/Rook.cpp
-        )
+        src/ChessMove.cpp
+        src/GeneralTree.cpp
+        src/Cross.cpp)
 set(TESTFILES        # All .cpp files in tests/
         tests/test.cpp
         )

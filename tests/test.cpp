@@ -35,15 +35,15 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position queen_pos_vert3= Position::create_position('c',8);
         Position queen_pos_hori1= Position::create_position('a',3);
         Position queen_pos_hori2= Position::create_position('h',3);
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(queen_pos,queen_pos));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_diag1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_diag2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_vert1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_vert2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_hori1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_hori2));
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(queen_pos,queen_pos_vert3));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(queen_pos,queen_pos_vert4));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(queen_pos,queen_pos));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_diag1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_diag2));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_vert1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_vert2));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_hori1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_hori2));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(queen_pos,queen_pos_vert3));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(queen_pos,queen_pos_vert4));
     }
     BOOST_AUTO_TEST_CASE(queen_move)
     {
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_SUITE(chess)
 
 
     BOOST_AUTO_TEST_CASE(king_move_isvalid) {
-        ChessBoard board("8/8/8/000Pq000/8/8/00P00000/8");
+        ChessBoard board("8/8/8/000Pk000/8/8/00P00000/8");
         Position king_pos = Position::create_position('e', 4);
         Position king_pos_hori1 = Position::create_position('d', 4);
         Position king_pos_hori2 = Position::create_position('f', 4);
@@ -72,15 +72,14 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position king_pos_diag2 = Position::create_position('f', 5);
         Position king_pos_diag3 = Position::create_position('d', 3);
         Position king_pos_diag4 = Position::create_position('f', 3);
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(king_pos,king_pos));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_hori1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_hori2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_vert1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_vert2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_diag1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_diag2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_diag3));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(king_pos,king_pos_diag4));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_hori1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_hori2));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(king_pos,king_pos_vert1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_vert2));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_diag1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_diag2));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_diag3));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(king_pos,king_pos_diag4));
     }
 
     BOOST_AUTO_TEST_CASE(pawn_move_isvalid) {
@@ -94,36 +93,47 @@ BOOST_AUTO_TEST_SUITE(chess)
         Position pawn_pos_diag2 = Position::create_position('e', 5);
         Position pawn_pos_vert11  = Position::create_position('a', 3);
         Position pawn_pos_vert22  = Position::create_position('a', 4);
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos,pawn_pos_vert1));
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos_vert2));
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos_vert3));
-        BOOST_CHECK_EQUAL(false, board.moveIsValid(pawn_pos,pawn_pos_diag1));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos,pawn_pos_diag2));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos0,pawn_pos_vert11));
-        BOOST_CHECK_EQUAL(true, board.moveIsValid(pawn_pos0,pawn_pos_vert22));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(pawn_pos,pawn_pos));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(pawn_pos,pawn_pos_vert1));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(pawn_pos,pawn_pos_vert2));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(pawn_pos,pawn_pos_vert3));
+        BOOST_CHECK_EQUAL(false, board.isMoveValid(pawn_pos,pawn_pos_diag1));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(pawn_pos,pawn_pos_diag2));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(pawn_pos0,pawn_pos_vert11));
+        BOOST_CHECK_EQUAL(true, board.isMoveValid(pawn_pos0,pawn_pos_vert22));
     }
 
     BOOST_AUTO_TEST_CASE(chess_test) {
         ChessBoard board("8/8/8/0000k000/8/8/00P0Q000/8");
-        BOOST_CHECK_EQUAL(true, board.isChess('k'));
+        BOOST_CHECK_EQUAL(true, board.isChessMate(ChessMateChoice::CHESS,'k'));
         ChessBoard board2("8/8/8/0000k000/8/8/00P000R0/8");
-        BOOST_CHECK_EQUAL(false, board2.isChess('k'));
+        BOOST_CHECK_EQUAL(false, board2.isChessMate(ChessMateChoice::CHESS,'k'));
         ChessBoard board3("8/8/000ppp00/000pkp00/000ppp00/00000H00/00P000R0/8");
-        BOOST_CHECK_EQUAL(true, board.isChess('k'));
+        BOOST_CHECK_EQUAL(true, board3.isChessMate(ChessMateChoice::CHESSMATE,'k'));
         ChessBoard board4("8/8/8/0000k00r/8/8/00P000R0/8");
-        BOOST_CHECK_EQUAL(false, board4.isChess('k'));
+        BOOST_CHECK_EQUAL(false, board4.isChessMate(ChessMateChoice::CHESS,'k'));
     }
 
     BOOST_AUTO_TEST_CASE(mate_test) {
-        ChessBoard board("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
-        BOOST_CHECK_EQUAL(true, board.isMate('k'));
+        ChessBoard board0("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
+        BOOST_CHECK_EQUAL(true, board0.isChessMate(ChessMateChoice::CHESSMATE,'k'));
+        // mat a l'etouffee
+        ChessBoard board1("8/8/8/8/8/8/00000hPP/000000RK");
+        BOOST_CHECK_EQUAL(true, board1.isChessMate(ChessMateChoice::CHESSMATE,'K'));
+        // mat de Boden
+        ChessBoard board2("8/8/8/00000b00/8/b0000000/P00H0000/00KR0000");
+        BOOST_CHECK_EQUAL(true, board2.isChessMate(ChessMateChoice::CHESSMATE,'K'));
+        // mat de Lolli
+        ChessBoard board3("8/8/8/8/8/00000pP0/00000PqP/00000RK0");
+        BOOST_CHECK_EQUAL(true, board3.isChessMate(ChessMateChoice::CHESSMATE,'K'));
+        // mat du gueridon
+        ChessBoard board4("8/8/8/8/000p0000/0000q000/0000K000/000R0B00");
+        BOOST_CHECK_EQUAL(true, board4.isChessMate(ChessMateChoice::CHESSMATE,'K'));
     }
 
     BOOST_AUTO_TEST_CASE(chessmate_test) {
         ChessBoard board("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
-        BOOST_CHECK_EQUAL(true, board.isMate('k'));
-        BOOST_CHECK_EQUAL(true, board.isChessMate());
+        BOOST_CHECK_EQUAL(true, board.isChessMate(ChessMateChoice::CHESSMATE,'k'));
     }
 
     BOOST_AUTO_TEST_CASE(castling_test) {

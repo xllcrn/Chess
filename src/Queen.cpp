@@ -18,7 +18,7 @@ Queen::~Queen() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Queen::drawTraject(Position const & posStart, bool b1, bool b2){
+trajectory Queen::drawTraject(Position const & posStart, bool b1){
     trajectory traject;
     trajectory vert, hori, diag;
     vert = vertical(posStart);

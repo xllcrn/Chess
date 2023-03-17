@@ -39,3 +39,8 @@ tests go in [tests/](tests/) (compiled to `unit_tests` by default).
 - hasmoved not an attribute of piece anymore (only board role). 
 Hasmoved is stored in the board map, the value becomes a tuple of pointer piece and the boolean.
 - Castling short & long
+
+## 17/03/2023
+- Code refactoring
+- Potential moves & general tree
+- the 'x' piece for debug
