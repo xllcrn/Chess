@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_SUITE(chess)
         BOOST_CHECK_EQUAL('k', short_board1.getPieceType(king_pos1));
         BOOST_CHECK_EQUAL('r', short_board1.getPieceType(rook_pos1));
         // short castling black
-        ChessBoard short_board2("r000kbhr/pbppqppp/00h00000/0000p000/00B0P000/00HP0H00/PPP00PPP/R0BQK00R");
+        ChessBoard short_board2("r000kbhr/pbppqppp/00h00000/0000p000/00B0P000/00HP0H00/PPP00PPP/R0BQK00R",'b');
         Position King_pos   = Position::create_position('e', 8);
         Position King_pos1  = Position::create_position('g', 8);
         Position Rook_pos1  = Position::create_position('f', 8);

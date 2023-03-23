@@ -10,7 +10,7 @@
 #include "Position.h"
 #include "Piece.h"
 #include "ChessMove.h"
-#include <map>
+#include <unordered_map>
 
 enum class ChessMateChoice
 {
@@ -31,6 +31,7 @@ public:
     void moveHelp(Position const &);
     int getScoreW() const;
     int getScoreB() const;
+    ColorOfPieces getColorActive()const;
     void printScores();
     bool isChess(char const &) const;
     bool isMate(char const &) const;
@@ -38,9 +39,11 @@ public:
     void pawnPromotion(Position const &);
     char getPieceType(Position const & pos)const;
     bool isCastling(Position const & pBeforeK, Position const & pAfterK) const;
-    std::vector<ChessMove> potentialMoves(ColorOfPieces);
+    std::tuple<std::vector<ChessMove>,int> potentialMoves(ColorOfPieces);
     bool isChessMate(ChessMateChoice const &, char const &) const;
     bool isMoveValid(Position const &, Position const &) const;
+    int compute_score(ColorOfPieces);
+    Position getKingPosition(char const &)const;
 private:
     // methods
     // ----------
@@ -52,7 +55,6 @@ private:
     void createPiece(char, Position const &, ColorOfPieces);
     void piecesSet(std::string const &);
     void promotion(char const &, Position const & pos);
-    Position getKingPosition(char const &)const;
     bool checkKing(char const &) const;
     bool isAttacked(Position const &, std::vector<Position> const &) const;
     bool mateTest(Position const &, ColorOfPieces) const;
@@ -67,7 +69,7 @@ private:
     Position m_kingW;
     Position m_kingB;
     ColorOfPieces m_color_active;
-    std::map<Position, std::tuple<std::shared_ptr<Piece>, bool>> m_board;
+    std::unordered_map<Position, std::tuple<std::shared_ptr<Piece>, bool>> m_board;
     static int m_lines;
     bool m_castlingW;
     bool m_castlingB;

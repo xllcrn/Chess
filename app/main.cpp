@@ -14,6 +14,7 @@
 #include <stdexcept>
 #include <array>
 #include <GeneralTree.h>
+#include <ChessMoveTree.h>
 
 int main() {
 
@@ -99,19 +100,19 @@ int main() {
 //        (toddler->child).push_back(newNode<aMove());
 //    }
 
-    std::shared_ptr<Node<int>> root = newNode<int>(10);
-    (root->child).push_back(newNode<int>(2));
-    (root->child).push_back(newNode<int>(34));
-    (root->child).push_back(newNode<int>(56));
-    (root->child).push_back(newNode<int>(100));
-    (root->child[0]->child).push_back(newNode<int>(77));
-    (root->child[0]->child).push_back(newNode<int>(88));
-    (root->child[2]->child).push_back(newNode<int>(1));
-    (root->child[3]->child).push_back(newNode<int>(7));
-    (root->child[3]->child).push_back(newNode<int>(8));
-    (root->child[3]->child).push_back(newNode<int>(9));
-//  pass the root node of your binary tree
-    printBT(root);
+//    std::shared_ptr<Node<int>> root = newNode<int>(10);
+//    (root->child).push_back(newNode<int>(2));
+//    (root->child).push_back(newNode<int>(34));
+//    (root->child).push_back(newNode<int>(56));
+//    (root->child).push_back(newNode<int>(100));
+//    (root->child[0]->child).push_back(newNode<int>(77));
+//    (root->child[0]->child).push_back(newNode<int>(88));
+//    (root->child[2]->child).push_back(newNode<int>(1));
+//    (root->child[3]->child).push_back(newNode<int>(7));
+//    (root->child[3]->child).push_back(newNode<int>(8));
+//    (root->child[3]->child).push_back(newNode<int>(9));
+////  pass the root node of your binary tree
+//    std::cout <<root;
 //    std::cout << "Level order traversal Before Mirroring\n";
 //    LevelOrderTraversal(root);
 //
@@ -124,23 +125,25 @@ int main() {
 //    LevelOrderTraversal(root0);
 ////
 ////
-//    //avec recursive
-    ChessBoard board_root1("xxxxxxxx/xxxxxxxx/xxxxxxxx/xxk0xxxx/xx000xxx/xxx0Kxxx/xxxxxxxx/xxxxxxxx");
+////    //avec recursive
+    ChessBoard board_root1("xxxxxxxx/xxxxxxxx/xxxxxxxx/xxr0xxxx/xx000xxx/xxx0Kxxx/xxxxxxxx/xxxxxxxx");
     std::cout << board_root1;
-    ChessMove am1(Position::create_init_position(), Position::create_init_position(), '0');
-    std::shared_ptr<Node<ChessMove>> root1 = newNode<ChessMove>(am1);
+//    ChessMove am1(Position::create_init_position(), Position::create_init_position(), '0');
+    std::shared_ptr<Node<ChessMove>> root1 = newNode<ChessMove>();
 //    createTree( root1, 1, board_root1);
     recursiveTree(root1, 4, board_root1, ColorOfPieces::WHITE) ;
-    LevelOrderTraversal(root1);
+//    LevelOrderTraversal(root1);
 //    printBranches<ChessMove>(root1);
-    printBT(root1);
+    std::cout << root1;
 
 
-//    ChessBoard board("8/8/8/0000k000/8/8/00P0Q000/8");
-//    std::cout << board;
-//    board.moveHelp(Position::create_position('e',7));
-//    board.moveHelp(Position::create_position('e',4));
-//    std::cout << board.isChessMate(ChessMateChoice::CHESS,'k') << std::endl;
+//    ChessBoard short_board1("rhbqk00r/pppp0ppp/00000h00/00b0p000/00B0P000/00H00000/PPPP0PPP/R0BQK0HR",'b');
+//    std::cout << short_board1;
+//    Position king_pos  = Position::create_position('e', 1);
+//    Position king_pos1  = Position::create_position('g', 1);
+//    Position rook_pos1  = Position::create_position('f', 1);
+//    short_board1.movePiece(king_pos,king_pos1);
+//    std::cout << short_board1;
 
 
 

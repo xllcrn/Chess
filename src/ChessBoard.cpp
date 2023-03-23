@@ -254,7 +254,7 @@ bool ChessBoard::movePiece(Position const & pBefore, Position const & pAfter, bo
 // @brief Find all the potential moves of the board for pieces of color "color"
 // @param color : the color to play
 // @return a vector of moves
-std::vector<ChessMove> ChessBoard::potentialMoves(ColorOfPieces color){
+std::tuple<std::vector<ChessMove>,int> ChessBoard::potentialMoves(ColorOfPieces color){
     std::vector<ChessMove> potMoves;
     std::vector<Position> pos_attacked = planAttacked(color);
     trajectory traject;
@@ -273,7 +273,8 @@ std::vector<ChessMove> ChessBoard::potentialMoves(ColorOfPieces color){
             }
         }
     }
-    return potMoves;
+    int score= compute_score(color);
+    return std::make_tuple(potMoves, score);
 }
 
 
@@ -518,9 +519,7 @@ bool ChessBoard::isCastling(Position const & pBeforeK, Position const & pAfterK)
 /// @brief Check if a king is chessmate
 /// @return boolean true if chessmate detected
 bool ChessBoard::isChessMate(ChessMateChoice const & choice, char const & king) const{
-    std::cout << "chess choice" << int(checkChessMate(king)) << int(choice) << std::endl;
-    if (checkChessMate(king) == choice) return true;
-    return false;
+    return (checkChessMate(king) == choice);
 }
 
 /// @brief Check if a position can be attacked by the other color
@@ -536,11 +535,9 @@ ChessMateChoice ChessBoard::checkChessMate(char const & king) const {
     // chess test
     trajectory traject = drawPotentials(kingPos);
     if(traject.empty()) {
-        std::cout << "echec et mat detecte";
         return ChessMateChoice::CHESSMATE;
     }
     else{ // find its position in the traject
-        std::cout<< "size"<<traject.size() << std::endl;
         bool kingFound = false;
         unsigned int trajectSize=0;
         for (path const &path1 : traject) {
@@ -551,8 +548,7 @@ ChessMateChoice ChessBoard::checkChessMate(char const & king) const {
         }
         for (path const &path1 : traject) {
             for (Position const &pos : path1) {
-                if (pos == kingPos){kingFound = true;std::cout << "trouve!"<< std::endl;}
-                std::cout << "toutes les pos qui attaque le king" << pos << kingPos<< std::endl;
+                if (pos == kingPos){kingFound = true;}
             }
         }
         if (!kingFound) {
@@ -652,6 +648,29 @@ void ChessBoard::promotion(char const &promo, Position const & pos){
     // create the new piece & add the piece to the board
     createPiece(tolower(promo),pos,color);
 }
+
+int ChessBoard::compute_score(ColorOfPieces color){
+    auto score{0};
+    auto coef{1};
+    auto value{0};
+    auto letter{false};
+    auto number{false};
+    std::string center_letters{"cefg"};
+    // compute score = number of pieces on the board of the current color
+    for (auto const & b : m_board) {
+        auto&[p_piece, hasMoved] = b.second;
+        if (color == p_piece->getColor()) {
+            value = p_piece->getValue();
+            if (center_letters.find(b.first.getX())!=std::string::npos) letter = true;
+            if (b.first.getY()>=3 && b.first.getY()<=6) number = true;
+            if(letter || number) coef = 2;
+            if(letter && number) coef = 3;
+        }
+        score +=coef*value;
+    }
+return score;
+}
+
 
 /* ----------------------------------------------------------
  *      SETTER/ GETTER
@@ -768,6 +787,10 @@ ColorOfPieces ChessBoard::getColorfromChar(char c)const{
     }
 }
 
+ColorOfPieces ChessBoard::getColorActive()const{
+    return m_color_active;
+}
+
 /* ----------------------------------------------------------
  *      EXTERNAL
  * ----------------------------------------------------------*/
@@ -816,4 +839,5 @@ ChessBoard play(ChessMove move, ChessBoard board){
     board.movePiece(move.start_pos,move.end_pos);
     return board;
 }
+
 

@@ -28,4 +28,18 @@ std::ostream& operator<<(std::ostream& , Position const &);
 bool operator==(Position const & , Position const &);
 bool operator<(const Position& , const Position &);
 bool operator!=(Position const & , Position const &);
+namespace std{
+    template<>
+    struct hash<Position>
+    {
+        typedef Position argument_type;
+        typedef size_t result_type;
+        result_type operator() (argument_type const & pos) const{
+            result_type hashValue = 17;
+            hashValue = 31*hashValue + std::hash<int>{}(pos.getY());
+            hashValue = 31*hashValue + std::hash<char>{}(pos.getX());
+            return hashValue;
+        }
+    };
+}
 #endif //PACMAN_POSITION_H

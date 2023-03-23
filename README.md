@@ -44,3 +44,7 @@ Hasmoved is stored in the board map, the value becomes a tuple of pointer piece 
 - Code refactoring
 - Potential moves & general tree
 - the 'x' piece for debug
+
+## 23/03/2023
+- Change map to unordered_map with hash values for custom types
+- Add score to tree nodes (heuristic function) in order to perform minimax
