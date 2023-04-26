@@ -1,19 +1,14 @@
-//
-// Created by xllcr on 23/02/2023.
-//
-
 #ifndef CHESS_BISHOP_H
 #define CHESS_BISHOP_H
 
 #include "Piece.h"
 class Bishop : public Piece{
 public:
-    Bishop(ColorOfPieces color);
+    Bishop(Color color);
     ~Bishop() noexcept override;
-    trajectory drawTraject(Position const &, bool) override;
+    Bitboard potentialBitMove(int const &, tuplBitboard const &) const override;
     bool isInitialPosition(Position const & pos) const override;
 private:
-    bool hasMoved(Position const &);
 };
 
 

@@ -11,13 +11,14 @@
 
 class Position {
 public:
+    Position():m_line('a'),m_column(1){};
     std::string to_String() const;
     void setX(char const &);
     void setY(unsigned int const &);
     char const & getX() const;
     unsigned int const & getY() const;
-    int getCoord() const;
-    static Position create_position(char const &, unsigned int const &);
+    int getIndex() const;
+    static Position create(char const &, unsigned int const &);
     static Position create_init_position();
 private:
     char m_line;
@@ -28,6 +29,7 @@ std::ostream& operator<<(std::ostream& , Position const &);
 bool operator==(Position const & , Position const &);
 bool operator<(const Position& , const Position &);
 bool operator!=(Position const & , Position const &);
+Position convertToPosition(int const & index);
 namespace std{
     template<>
     struct hash<Position>

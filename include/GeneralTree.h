@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #include <optional>
-#include "ChessBoard.h"
 #include "ChessMove.h"
 using namespace std::literals;
 

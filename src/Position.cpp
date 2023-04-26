@@ -8,7 +8,7 @@
  *                        CONSTRUCTOR
 /* ------------------------------------------------------------------------ */
 
-Position Position::create_position(char const &line , unsigned int const &column){
+Position Position::create(char const &line , unsigned int const &column){
 
     if (line < 'a' || line > 'h')
         throw std::runtime_error("line not valid");
@@ -17,10 +17,6 @@ Position Position::create_position(char const &line , unsigned int const &column
         throw std::runtime_error("column not valid");
 
     return {line,column};
-}
-
-Position Position::create_init_position(){
-    return {'z',0};
 }
 
 Position::Position(char const & x,unsigned int const &y):m_line(x),m_column(y){
@@ -58,11 +54,20 @@ unsigned int const & Position::getY() const{
     return m_column ;
 }
 
-int Position::getCoord() const{
+int Position::getIndex() const{
     /* Convert position to coordinate into vector m_board */
     int lin = m_line-97;
     return (m_column-1)*8+lin;
 }
+
+Position convertToPosition(int const & index) {
+    /* Convert position to coordinate into vector m_board */
+    int line = 97+index%8;
+    char letter = line;
+    int column = 1+index/8;
+    return Position::create(letter,column);
+}
+
 
 /* ------------------------------------------------------------------------
  *                        EXTERNAL FUNCTIONS
@@ -80,5 +85,5 @@ bool operator!=(Position const & pFirst, Position const & pSecond){
     return (!(pFirst==pSecond));
 }
 bool operator<(Position const & pFirst,Position const & pSecond){
-    return (pFirst.getCoord()<pSecond.getCoord());
+    return (pFirst.getIndex()<pSecond.getIndex());
 }

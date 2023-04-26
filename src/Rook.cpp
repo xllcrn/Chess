@@ -1,14 +1,10 @@
-//
-// Created by xllcr on 23/02/2023.
-//
-
 #include "Rook.h"
 
 /* ----------------------------------------------------------
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 
-Rook::Rook(ColorOfPieces color):Piece('r',color, 5){}
+Rook::Rook(Color color):Piece('r',color, 5){}
 
 /* ----------------------------------------------------------
  *      DESTRUCTOR
@@ -18,14 +14,8 @@ Rook::~Rook() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Rook::drawTraject(Position const & posStart, bool b1){
-    trajectory traject;
-    trajectory vert, hori, diag;
-    vert = vertical(posStart);
-    hori = horizontal(posStart);
-    traject.insert(vert.begin(),vert.end());
-    traject.insert(hori.begin(),hori.end());
-    return traject;
+Bitboard Rook::potentialBitMove(int const & pos, tuplBitboard const& bb2)const{
+    return (verticalMove(pos, 8, bb2) | horizontalMove(pos, 8, bb2) );
 }
 
 bool Rook::isRook() const{
@@ -34,13 +24,13 @@ bool Rook::isRook() const{
 
 bool Rook::isInitialPosition(Position const & pos) const{
     switch (m_color){
-        case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('a',1)) return true;
-            if(pos==Position::create_position('h',1)) return true;
+        case(Color::WHITE):
+            if(pos==Position::create('a',1)) return true;
+            if(pos==Position::create('h',1)) return true;
             break;
-        case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('a',8)) return true;
-            if(pos==Position::create_position('h',8)) return true;
+        case(Color::BLACK):
+            if(pos==Position::create('a',8)) return true;
+            if(pos==Position::create('h',8)) return true;
             break;
     }
     return false;

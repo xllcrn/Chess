@@ -48,3 +48,10 @@ Hasmoved is stored in the board map, the value becomes a tuple of pointer piece 
 ## 23/03/2023
 - Change map to unordered_map with hash values for custom types
 - Add score to tree nodes (heuristic function) in order to perform minimax
+
+## 26/04/2023
+- Add Model, Controller, View (MCV)
+- Add board object
+- Add bitboard
+- Adapt move to bitboard
+- Add piece factory  

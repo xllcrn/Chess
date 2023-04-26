@@ -10,13 +10,61 @@
 
 
 #include <iostream>
-#include "ChessBoard.h"
-#include <stdexcept>
-#include <array>
-#include <GeneralTree.h>
-#include <ChessMoveTree.h>
+//#include <GeneralTree.h>
+//#include <ChessMoveTree.h>
+#include "ChessModel.h"
+#include "ChessView.h"
+#include "ChessController.h"
 
 int main() {
+
+//        ChessModel chessModel("hxxqkbhr/pppppppp/8/8/8/8/PPPPPPPP/RHBQKBHX");
+        std::string board_str{"8/8/8/00000b00/8/b0000000/P00H0000/00KR0000"};
+//    Position king_pos = Position::create('e', 4);
+//    Position king_pos_hori1 = Position::create('d', 4);
+//    Position king_pos_hori2 = Position::create('f', 4);
+//    Position king_pos_vert1 = Position::create('e', 3);
+//    Position king_pos_vert2 = Position::create('e', 5);
+//    Position king_pos_diag1 = Position::create('d', 5);
+        ChessModel board(board_str);
+        Color couleur = board.checkWinner();
+        std::cout << "couleur du winner" <<couleur << "\n";
+//        std::cout << board.isMoveValid(Move{king_pos,king_pos_diag1},Color::WHITE);
+//
+//    std::cout << board.isMoveValid(Move{king_pos,king_pos_vert1},Color::WHITE);
+
+        ChessView chessView;
+        ChessController chessController(board, chessView);
+        Board board0(board_str);
+        chessView.drawBoard(board0.boardToChar());
+
+//    chessController.initializePlayer();
+//    bool startAgain = false;
+//    startAgain = chessController.startGame();
+
+//    Move playerMove;
+//    Position start = Position::create('d',2);
+//    playerMove.start_pos = start.getIndex();
+//    Position end = Position::create('e',3);
+//    playerMove.end_pos = end.getIndex();
+//    bool isValid = chessModel.isPlayerMoveValid(playerMove);
+//    std::cout << "mouvement valide? " << isValid << std::endl;
+//    chessModel.recordMove(playerMove, Color::WHITE);
+
+
+
+
+
+//    board->printBoard();
+//    for (auto p_piece : *board){
+//        std::cout << p_piece->m_type;
+//    }
+
+//    model.board(ChessBoardBuilder::create(""));
+
+    // instantiate a view
+//    ChessViewTerminal view(&model);
+
 
 //    ChessBoard board0("8/8/000ppp00/Q000kp00/000ppp00/00000H00/00P000R0/8");
 //    std::cout << board0;
@@ -126,15 +174,29 @@ int main() {
 ////
 ////
 ////    //avec recursive
-    ChessBoard board_root1("xxxxxxxx/xxxxxxxx/xxxxxxxx/xxr0xxxx/xx000xxx/xxx0Kxxx/xxxxxxxx/xxxxxxxx");
-    std::cout << board_root1;
-//    ChessMove am1(Position::create_init_position(), Position::create_init_position(), '0');
-    std::shared_ptr<Node<ChessMove>> root1 = newNode<ChessMove>();
-//    createTree( root1, 1, board_root1);
-    recursiveTree(root1, 4, board_root1, ColorOfPieces::WHITE) ;
-//    LevelOrderTraversal(root1);
-//    printBranches<ChessMove>(root1);
-    std::cout << root1;
+//    // instantiate a director
+//    std::unique_ptr<Director> director= std::make_unique<Director>();
+//    // instantiate a builder
+//    std::shared_ptr<ChessBoardBuilder> builder = std::make_shared<ChessBoardBuilder>();
+//    director->set_builder(builder);
+//    director->BuildMinimalChessBoard();
+//    ChessBoard* p= builder->GetProduct();
+//    std::cout << *p;
+//    std::unique_ptr<Board> board_root1 = ChessBoardBuilder::create("");
+//    std::unique_ptr<Board> board_root2 = ChessBoardBuilder::create("xxxxxxxx/xxxxxxxx/xxxxxxxx/xxr0xxxx/xx000xxx/xxx0Kxxx/xxxxxxxx/xxxxxxxx");
+//
+////    ChessBoard board_root1 = ChessBoard::create("x/x/x/xxr0xxxx/xx000xxx/xxx0Kxxx/x/x");    //.king().white(Position::create{'a',1});
+//    //ChessBoard board_root1("xxxxxxxx/xxxxxxxx/xxxxxxxx/xxr0xxxx/xx000xxx/xxx0Kxxx/xxxxxxxx/xxxxxxxx");
+////    ChessView view;
+//    std::cout << *board_root1;
+//    std::cout << *board_root2;
+////    ChessMove am1(Position::create_init_position(), Position::create_init_position(), '0');
+//    std::shared_ptr<Node<ChessMove>> root1 = newNode<ChessMove>();
+////    createTree( root1, 1, board_root1);
+//    recursiveTree(root1, 4, board_root1, Color::WHITE) ;
+////    LevelOrderTraversal(root1);
+////    printBranches<ChessMove>(root1);
+//    std::cout << root1;
 
 
 //    ChessBoard short_board1("rhbqk00r/pppp0ppp/00000h00/00b0p000/00B0P000/00H00000/PPPP0PPP/R0BQK0HR",'b');

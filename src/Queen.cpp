@@ -1,14 +1,10 @@
-//
-// Created by xllcr on 23/02/2023.
-//
-
 #include "Queen.h"
 
 /* ----------------------------------------------------------
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 
-Queen::Queen(ColorOfPieces color):Piece('q',color, 9){}
+Queen::Queen(Color color):Piece('q',color, 9){}
 
 /* ----------------------------------------------------------
  *      DESTRUCTOR
@@ -18,25 +14,18 @@ Queen::~Queen() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Queen::drawTraject(Position const & posStart, bool b1){
-    trajectory traject;
-    trajectory vert, hori, diag;
-    vert = vertical(posStart);
-    hori = horizontal(posStart);
-    diag = diagonal(posStart);
-    traject.insert(vert.begin(),vert.end());
-    traject.insert(hori.begin(),hori.end());
-    traject.insert(diag.begin(),diag.end());
-    return traject;
+Bitboard Queen::potentialBitMove(int const & pos, tuplBitboard const& bb2)const{
+    return (verticalMove(pos, 8, bb2) | horizontalMove(pos, 8, bb2) |
+            diagonalMove(pos, 8, bb2));
 }
 
 bool Queen::isInitialPosition(Position const & pos) const{
     switch (m_color){
-        case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('d',1)) return true;
+        case(Color::WHITE):
+            if(pos==Position::create('d',1)) return true;
             break;
-        case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('d',8)) return true;
+        case(Color::BLACK):
+            if(pos==Position::create('d',8)) return true;
             break;
     }
     return false;

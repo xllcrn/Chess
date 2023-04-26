@@ -1,7 +1,3 @@
-//
-// Created by xllcr on 22/02/2023.
-//
-
 #ifndef CHESS_PAWN_H
 #define CHESS_PAWN_H
 
@@ -9,12 +5,14 @@
 
 class Pawn : public Piece {
 public:
-    Pawn(ColorOfPieces color);
+    Pawn(Color color);
     ~Pawn() noexcept override;
-    trajectory drawTraject(Position const &, bool) override;
+    Bitboard potentialBitMove(int const &, tuplBitboard const &) const override;
     bool isPromoted(Position const &) const override;
     bool isInitialPosition(Position const & pos) const override;
+    bool isInitialPosition(int const & pos) const;
 private:
+    bool isPieceFront(int const & pos, int const & step, tuplBitboard const& bb2, Color const & )const;
 };
 
 #endif //CHESS_PAWN_H

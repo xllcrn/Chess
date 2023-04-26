@@ -14,7 +14,7 @@ public:
     Player();
 private:
     std::string m_name;
-    ColorOfPieces m_color;
+    Color m_color;
     std::vector<std::shared_ptr<Piece>> m_setPieces;
 };
 

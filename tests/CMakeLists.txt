@@ -17,6 +17,13 @@ add_executable (${TEST_MAIN} test.cpp)
 target_link_libraries (Boost_Tests_run ${Boost_LIBRARIES} ${LIBRARY_NAME})
 #target_link_libraries(${TEST_MAIN} ${LIBRARY_NAME} )
 
+set_target_properties(
+        ${TEST_MAIN} PROPERTIES
+        CXX_STANDARD 20
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+)
+
 
 #
 #

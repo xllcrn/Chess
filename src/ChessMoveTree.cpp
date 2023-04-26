@@ -4,7 +4,7 @@
 /// @param color : the color to play
 void recursiveTree(std::shared_ptr<Node<ChessMove>> p, int level,
                     ChessBoard board_parent,
-                    ColorOfPieces color) {
+                    Color color) {
 
     if (level <= 0) return;
 
@@ -19,7 +19,7 @@ void recursiveTree(std::shared_ptr<Node<ChessMove>> p, int level,
 
         //check if not chessmate of the switch_color before calling recursively
         char king='k';
-        if (switch_color(color)==ColorOfPieces::BLACK) king='K';
+        if (switch_color(color)==Color::BLACK) king='K';
         if (!board_child.isChessMate(ChessMateChoice::CHESSMATE,king)) {
             recursiveTree(p->child[i], level - 1, board_child, switch_color(color));
         }

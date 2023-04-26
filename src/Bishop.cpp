@@ -8,7 +8,7 @@
  *      CONSTRUCTORS
  * ----------------------------------------------------------*/
 
-Bishop::Bishop(ColorOfPieces color):Piece('b',color,3){}
+Bishop::Bishop(Color color):Piece('b',color,3){}
 
 /* ----------------------------------------------------------
  *      DESTRUCTOR
@@ -18,23 +18,19 @@ Bishop::~Bishop() noexcept{};
 /* ----------------------------------------------------------
  *      MEMBER METHODS
  * ----------------------------------------------------------*/
-trajectory Bishop::drawTraject(Position const & posStart, bool b1){
-    trajectory traject;
-    trajectory diag;
-    diag = diagonal(posStart);
-    traject.insert(diag.begin(),diag.end());
-    return traject;
+Bitboard Bishop::potentialBitMove(int const & pos, tuplBitboard const& bb2)const{
+    return diagonalMove(pos, 8, bb2);
 }
 
 bool Bishop::isInitialPosition(Position const & pos) const{
     switch (m_color){
-        case(ColorOfPieces::WHITE):
-            if(pos==Position::create_position('c',1)) return true;
-            if(pos==Position::create_position('f',1)) return true;
+        case(Color::WHITE):
+            if(pos==Position::create('c',1)) return true;
+            if(pos==Position::create('f',1)) return true;
             break;
-        case(ColorOfPieces::BLACK):
-            if(pos==Position::create_position('c',8)) return true;
-            if(pos==Position::create_position('f',8)) return true;
+        case(Color::BLACK):
+            if(pos==Position::create('c',8)) return true;
+            if(pos==Position::create('f',8)) return true;
             break;
     }
     return false;

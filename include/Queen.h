@@ -1,16 +1,12 @@
-//
-// Created by xllcr on 23/02/2023.
-//
-
 #ifndef CHESS_QUEEN_H
 #define CHESS_QUEEN_H
 #include "Piece.h"
 
 class Queen : public Piece{
 public:
-    Queen(ColorOfPieces color);
+    Queen(Color color);
     ~Queen() noexcept override;
-    trajectory drawTraject(Position const &, bool) override;
+    Bitboard potentialBitMove(int const &, tuplBitboard const &) const override;
     bool isInitialPosition(Position const & pos) const override;
 private:
 };

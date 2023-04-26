@@ -15,6 +15,6 @@
 using namespace std::literals;
 
 
-void recursiveTree(std::shared_ptr<Node<ChessMove>>, int , ChessBoard , ColorOfPieces);
+void recursiveTree(std::shared_ptr<Node<ChessMove>>, int , ChessBoard , Color);
 
 #endif //CHESMOVETREE_H

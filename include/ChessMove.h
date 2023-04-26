@@ -18,4 +18,15 @@ struct ChessMove {
 
 std::ostream& operator<<(std::ostream&, ChessMove const &);
 
+struct Move {
+    int start_pos;
+    int end_pos;
+    Move() = default;
+    Move(int const & startPos, int const & endPos);
+    Move(Position const & startPos, Position const & endPos);
+};
+Move reverse(Move const & move);
+bool operator==(Move const & moveLeft, Move const & moveRight);
+
+
 #endif //CPP_CHESSGAME_CHESSMOVE_H

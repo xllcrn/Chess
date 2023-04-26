@@ -1,18 +1,16 @@
-//
-// Created by xllcr on 23/02/2023.
-//
-
 #ifndef CHESS_KING_H
 #define CHESS_KING_H
 
 #include "Piece.h"
 class King :public Piece {
 public:
-    King(ColorOfPieces color);
+    King(Color color);
     ~King() noexcept override;
-    trajectory drawTraject(Position const &, bool);
+    Bitboard potentialBitMove(int const &, tuplBitboard const &) const override;
     bool isKing() const override;
     bool isInitialPosition(Position const & pos) const override;
+    bool isKingW() const;
+    bool isKingB() const;
 private:
 };
 

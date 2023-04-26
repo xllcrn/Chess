@@ -42,20 +42,27 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 #                         Locate files (change as needed).
 # --------------------------------------------------------------------------------
 set(SOURCES          # All .cpp files in src/
-        src/ChessBoard.cpp
+        src/Piece.cpp
         src/Bishop.cpp
         src/King.cpp
         src/Knight.cpp
         src/Pawn.cpp
-        src/Piece.cpp
-        src/Player.cpp
-        src/Position.cpp
         src/Queen.cpp
         src/Rook.cpp
+        src/Position.cpp
         src/ChessMove.cpp
-        src/GeneralTree.cpp
+#        src/GeneralTree.cpp
         src/Cross.cpp
-        src/ChessMoveTree.cpp)
+#        src/ChessMoveTree.cpp
+#        src/ChessViewTerminal.cpp
+#        src/ChessBoardBuilder.cpp
+        src/PieceFactory.cpp
+        src/ChessController.cpp
+        src/ChessModel.cpp
+        src/ChessView.cpp
+        src/Board.cpp
+        include/Board.h
+        src/PieceFactory.cpp src/Bitboard.cpp)
 set(TESTFILES        # All .cpp files in tests/
         tests/test.cpp
         )
@@ -88,7 +95,7 @@ target_link_libraries(main PRIVATE ${LIBRARY_NAME})  # Link the executable to li
 set_target_properties(
         ${LIBRARY_NAME} main
         PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 20
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
 )
